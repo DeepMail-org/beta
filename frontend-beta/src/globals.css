@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap");
+@import "@fontsource/geist-sans";
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--color-background: #000000;
+	--color-foreground: #f4f4f5;
+	--color-secondary: #d4d4d8;
+	--color-muted: #9ca3af;
+	--color-dimmed: #4b5563;
+	--color-accent: #ffffff;
+}
+
+:root {
+	/* ── Base backgrounds ── */
+	--background: #000000;
+	--surface: #000000;
+	--surface-2: #000000;
+	--surface-3: #000000;
+
+	/* ── Text ── */
+	--foreground: #f4f4f5;
+	--secondary: #d4d4d8;
+	--muted: #9ca3af;
+	--dimmed: #4b5563;
+
+	/* ── Glass layers ── */
+	--border: rgba(255, 255, 255, 0.06);
+	--border-hover: rgba(255, 255, 255, 0.1);
+	--glass: rgba(255, 255, 255, 0.04);
+	--glass-strong: rgba(255, 255, 255, 0.08);
+	--glass-hover: rgba(255, 255, 255, 0.06);
+
+	/* ── Accent (monochrome only) ── */
+	--accent: #ffffff;
+	--accent-soft: rgba(255, 255, 255, 0.7);
+	--accent-muted: rgba(255, 255, 255, 0.15);
+
+	/* ── Metallic headline gradient ── */
+	--gradient-headline: linear-gradient(to bottom, #ffffff 0%, #a1a1aa 100%);
+
+	/* ── Subtle background glow ── */
+	--bg-glow: radial-gradient(
+		circle at 50% 40%,
+		rgba(255, 255, 255, 0.045),
+		transparent 62%
+	);
+
+	/* ── Shadows ── */
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+	--shadow-md: 0 4px 24px rgba(0, 0, 0, 0.6);
+	--shadow-lg: 0 8px 48px rgba(0, 0, 0, 0.7);
+	--shadow-glass:
+		0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body {
+	background-color: var(--background);
+	color: var(--foreground);
+	font-family: "Geist Sans", "DM Sans", sans-serif;
+	overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+	font-family: "General Sans", "Space Grotesk", sans-serif;
+}
+
+/* Base glass card */
+.glass {
+	background: var(--glass);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow-glass);
+}
+
+/* Strong glass (modals, dropdowns) */
+.glass-strong {
+	background: rgba(11, 13, 20, 0.85);
+	backdrop-filter: blur(32px);
+	-webkit-backdrop-filter: blur(32px);
+	border: 1px solid rgba(255, 255, 255, 0.07);
+	box-shadow:
+		0 16px 64px rgba(0, 0, 0, 0.7),
+		inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Glass border shine (pseudo-element) */
+.glass-shine {
+	position: relative;
+}
+.glass-shine::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		160deg,
+		rgba(255, 255, 255, 0.14) 0%,
+		rgba(255, 255, 255, 0.04) 40%,
+		rgba(255, 255, 255, 0) 70%,
+		rgba(255, 255, 255, 0.06) 100%
+	);
+	-webkit-mask:
+		linear-gradient(#fff 0 0) content-box,
+		linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+/* Noise texture overlay */
+.noise::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+	opacity: 0.025;
+	pointer-events: none;
+}
+
+.text-gradient {
+	background: var(--gradient-headline);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Liquid Glass utility for new Marquee */
+.liquid-glass {
+	background: rgba(255, 255, 255, 0.01);
+	background-blend-mode: luminosity;
+	backdrop-filter: blur(4px);
+	border: none;
+	box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+	position: relative;
+	overflow: hidden;
+}
+.liquid-glass::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1.4px;
+	background: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.45) 0%,
+		rgba(255, 255, 255, 0.15) 20%,
+		rgba(255, 255, 255, 0) 40%,
+		rgba(255, 255, 255, 0) 60%,
+		rgba(255, 255, 255, 0.15) 80%,
+		rgba(255, 255, 255, 0.45) 100%
+	);
+	-webkit-mask:
+		linear-gradient(#fff 0 0) content-box,
+		linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+@theme inline {
+	--animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+}
+
+@keyframes orbit {
+	0% {
+		transform: rotate(calc(var(--angle) * 1deg))
+			translateY(calc(var(--radius) * 1px))
+			rotate(calc(var(--angle) * -1deg));
+	}
+	100% {
+		transform: rotate(calc(var(--angle) * 1deg + 360deg))
+			translateY(calc(var(--radius) * 1px))
+			rotate(calc((var(--angle) * -1deg) - 360deg));
+	}
+}

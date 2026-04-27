@@ -1,0 +1,56 @@
+syntax = "proto3";
+package deepmail.geo;
+
+service GeoService {
+  rpc LookupIp(GeoLookupRequest) returns (GeoLookupResponse);
+  rpc AnalyzeHopChain(HopChainRequest) returns (HopChainResponse);
+}
+
+message GeoLookupRequest {
+  string ip_address = 1;
+}
+
+message GeoLookupResponse {
+  string ip_address = 1;
+  string country_code = 2;
+  string country_name = 3;
+  string city = 4;
+  string region = 5;
+  double latitude = 6;
+  double longitude = 7;
+  int32 asn = 8;
+  string asn_org = 9;
+  string isp = 10;
+  bool is_hosting = 11;
+  bool is_residential = 12;
+  string timezone = 13;
+}
+
+message HopChainRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  repeated ReceivedHop hops = 3;
+}
+
+message HopChainResponse {
+  string email_id = 1;
+  repeated GeoHop geo_hops = 2;
+  float geo_anomaly_score = 3;
+  string anomaly_detail = 4;
+}
+
+message ReceivedHop {
+  int32 hop_number = 1;
+  string from_ip = 2;
+  string by_host = 3;
+  int64 timestamp_unix = 4;
+  int32 delay_seconds = 5;
+}
+
+message GeoHop {
+  int32 hop_number = 1;
+  string ip_address = 2;
+  GeoLookupResponse geo = 3;
+  int32 delay_seconds = 4;
+  double distance_km = 5;
+}

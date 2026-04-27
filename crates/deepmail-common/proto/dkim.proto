@@ -1,0 +1,38 @@
+syntax = "proto3";
+package deepmail.dkim;
+
+service DkimService {
+  rpc AnalyzeDkim(DkimAnalysisRequest) returns (DkimAnalysisResponse);
+}
+
+message DkimAnalysisRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  repeated string dkim_headers = 3;
+  string raw_body = 4;
+  string from_domain = 5;
+}
+
+message DkimAnalysisResponse {
+  string email_id = 1;
+  repeated DkimResult results = 2;
+  bool replay_detected = 3;
+  float confidence_score = 4;
+  string summary = 5;
+}
+
+message DkimResult {
+  string selector = 1;
+  string domain = 2;
+  bool signature_valid = 3;
+  bool body_hash_valid = 4;
+  bool dns_key_found = 5;
+  bool key_rotated = 6;
+  bool replay_suspected = 7;
+  int64 signature_timestamp = 8;
+  int64 expiration_timestamp = 9;
+  string algorithm = 10;
+  string canonicalization = 11;
+  float confidence = 12;
+  string detail = 13;
+}

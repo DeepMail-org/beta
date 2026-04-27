@@ -1,0 +1,64 @@
+syntax = "proto3";
+package deepmail.report;
+
+service ReportService {
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse);
+  rpc GetReport(GetReportRequest) returns (GetReportResponse);
+  rpc ListReports(ListReportsRequest) returns (ListReportsResponse);
+  rpc ScheduleDigest(ScheduleDigestRequest) returns (ScheduleDigestResponse);
+}
+
+message GenerateReportRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  repeated string formats = 3; // pdf, stix, json, csv
+}
+
+message GenerateReportResponse {
+  string report_id = 1;
+  repeated ReportArtifact artifacts = 2;
+}
+
+message ReportArtifact {
+  string format = 1;
+  string s3_key = 2;
+  string signed_url = 3;
+  int64 signed_url_expires_at = 4;
+  int64 size_bytes = 5;
+}
+
+message GetReportRequest {
+  string report_id = 1;
+  string tenant_id = 2;
+}
+
+message GetReportResponse {
+  string report_id = 1;
+  string email_id = 2;
+  repeated ReportArtifact artifacts = 3;
+  string status = 4;
+  string created_at = 5;
+}
+
+message ListReportsRequest {
+  string tenant_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message ListReportsResponse {
+  repeated GetReportResponse reports = 1;
+  int32 total_count = 2;
+}
+
+message ScheduleDigestRequest {
+  string tenant_id = 1;
+  string frequency = 2; // daily, weekly
+  string email_recipients = 3;
+  bool active = 4;
+}
+
+message ScheduleDigestResponse {
+  string schedule_id = 1;
+  bool success = 2;
+}

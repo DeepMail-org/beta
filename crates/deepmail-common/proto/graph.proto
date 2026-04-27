@@ -1,0 +1,79 @@
+syntax = "proto3";
+package deepmail.graph;
+
+service GraphService {
+  rpc AddNodes(AddNodesRequest) returns (AddNodesResponse);
+  rpc AddEdges(AddEdgesRequest) returns (AddEdgesResponse);
+  rpc GetEntityGraph(GetEntityGraphRequest) returns (GetEntityGraphResponse);
+  rpc TraverseC2Path(TraverseC2PathRequest) returns (TraverseC2PathResponse);
+  rpc GetCampaignGraph(GetCampaignGraphRequest) returns (GetCampaignGraphResponse);
+}
+
+message AddNodesRequest {
+  string tenant_id = 1;
+  string email_id = 2;
+  repeated GraphNode nodes = 3;
+}
+
+message AddNodesResponse {
+  int32 nodes_created = 1;
+  int32 nodes_updated = 2;
+}
+
+message AddEdgesRequest {
+  string tenant_id = 1;
+  string email_id = 2;
+  repeated GraphEdge edges = 3;
+}
+
+message AddEdgesResponse {
+  int32 edges_created = 1;
+}
+
+message GraphNode {
+  string node_id = 1;
+  string node_type = 2; // Email, IP, Domain, URL, Hash, Actor, C2Server, Campaign, ASN
+  string label = 3;
+  map<string, string> properties = 4;
+}
+
+message GraphEdge {
+  string source_id = 1;
+  string target_id = 2;
+  string edge_type = 3; // SENT_FROM, RECEIVED_BY, CONTAINS_URL, RESOLVES_TO, etc.
+  map<string, string> properties = 4;
+}
+
+message GetEntityGraphRequest {
+  string tenant_id = 1;
+  string email_id = 2;
+  int32 depth = 3;
+}
+
+message GetEntityGraphResponse {
+  repeated GraphNode nodes = 1;
+  repeated GraphEdge edges = 2;
+}
+
+message TraverseC2PathRequest {
+  string tenant_id = 1;
+  string start_node_id = 2;
+  int32 max_depth = 3;
+}
+
+message TraverseC2PathResponse {
+  repeated GraphNode path_nodes = 1;
+  repeated GraphEdge path_edges = 2;
+  int32 path_length = 3;
+}
+
+message GetCampaignGraphRequest {
+  string tenant_id = 1;
+  string campaign_id = 2;
+}
+
+message GetCampaignGraphResponse {
+  repeated GraphNode nodes = 1;
+  repeated GraphEdge edges = 2;
+  int32 email_count = 3;
+}

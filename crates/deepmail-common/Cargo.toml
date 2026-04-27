@@ -1,0 +1,23 @@
+[package]
+name = "deepmail-common"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tonic = { workspace = true }
+prost = { workspace = true }
+prost-types = { workspace = true }
+async-nats = { workspace = true }
+sqlx = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+config = { workspace = true }
+
+[build-dependencies]
+tonic-build = "0.12"

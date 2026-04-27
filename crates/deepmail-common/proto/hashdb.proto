@@ -1,0 +1,75 @@
+syntax = "proto3";
+package deepmail.hashdb;
+
+service HashDbService {
+  rpc LookupHash(HashLookupRequest) returns (HashLookupResponse);
+  rpc RegisterHash(RegisterHashRequest) returns (RegisterHashResponse);
+  rpc BloomCheck(BloomCheckRequest) returns (BloomCheckResponse);
+  rpc FuzzyMatch(FuzzyMatchRequest) returns (FuzzyMatchResponse);
+}
+
+message HashLookupRequest {
+  string sha256 = 1;
+  string md5 = 2;
+}
+
+message HashLookupResponse {
+  bool found = 1;
+  string hash_id = 2;
+  string sha256 = 3;
+  string md5 = 4;
+  string ssdeep = 5;
+  string tlsh = 6;
+  string imphash = 7;
+  string verdict = 8;
+  float threat_score = 9;
+  int32 times_seen = 10;
+  string first_seen = 11;
+  string last_seen = 12;
+}
+
+message RegisterHashRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  string sha256 = 3;
+  string md5 = 4;
+  string ssdeep = 5;
+  string tlsh = 6;
+  string imphash = 7;
+  string verdict = 8;
+  float threat_score = 9;
+  string file_type = 10;
+  int64 file_size = 11;
+}
+
+message RegisterHashResponse {
+  string hash_id = 1;
+  bool already_existed = 2;
+}
+
+message BloomCheckRequest {
+  string sha256 = 1;
+}
+
+message BloomCheckResponse {
+  bool possibly_exists = 1;
+}
+
+message FuzzyMatchRequest {
+  string ssdeep = 1;
+  string tlsh = 2;
+  float threshold = 3;
+  int32 limit = 4;
+}
+
+message FuzzyMatchResponse {
+  repeated FuzzyMatchResult matches = 1;
+}
+
+message FuzzyMatchResult {
+  string hash_id = 1;
+  string sha256 = 2;
+  float similarity = 3;
+  string verdict = 4;
+  string cluster_id = 5;
+}

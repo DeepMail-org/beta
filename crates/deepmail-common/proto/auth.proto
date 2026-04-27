@@ -1,0 +1,127 @@
+syntax = "proto3";
+package deepmail.auth;
+
+import "google/protobuf/timestamp.proto";
+
+// ──────────────────────────────────────────────
+// Auth Service — Registration, Login, OTP, JWT
+// ──────────────────────────────────────────────
+
+service AuthService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc VerifyLoginOtp(VerifyLoginOtpRequest) returns (VerifyLoginOtpResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc RequestPasswordReset(PasswordResetRequest) returns (PasswordResetResponse);
+}
+
+message RegisterRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  string user_id = 1;
+  string message = 2;
+}
+
+message VerifyOtpRequest {
+  string user_id = 1;
+  string otp_code = 2;
+}
+
+message VerifyOtpResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_at = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string ip_address = 3;
+  string user_agent = 4;
+}
+
+message LoginResponse {
+  string user_id = 1;
+  string message = 2;
+}
+
+message VerifyLoginOtpRequest {
+  string user_id = 1;
+  string otp_code = 2;
+  string ip_address = 3;
+}
+
+message VerifyLoginOtpResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_at = 3;
+  UserInfo user = 4;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_at = 3;
+}
+
+message ValidateTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string user_id = 2;
+  string tenant_id = 3;
+  string role = 4;
+}
+
+message LogoutRequest {
+  string user_id = 1;
+  string refresh_token = 2;
+}
+
+message LogoutResponse {
+  bool success = 1;
+}
+
+message ChangePasswordRequest {
+  string user_id = 1;
+  string current_password = 2;
+  string new_password = 3;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message PasswordResetRequest {
+  string email = 1;
+}
+
+message PasswordResetResponse {
+  string message = 1;
+}
+
+message UserInfo {
+  string user_id = 1;
+  string username = 2;
+  string email = 3;
+  string role = 4;
+  string tenant_id = 5;
+  bool email_verified = 6;
+  bool is_active = 7;
+  google.protobuf.Timestamp created_at = 8;
+}

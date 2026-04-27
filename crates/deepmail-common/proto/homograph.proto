@@ -1,0 +1,38 @@
+syntax = "proto3";
+package deepmail.homograph;
+
+service HomographService {
+  rpc AnalyzeDomain(HomographAnalysisRequest) returns (HomographAnalysisResponse);
+  rpc BatchAnalyze(BatchHomographRequest) returns (BatchHomographResponse);
+}
+
+message HomographAnalysisRequest {
+  string domain = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+}
+
+message HomographAnalysisResponse {
+  string domain = 1;
+  bool is_homograph = 2;
+  string punycode = 3;
+  string nfkc_normalized = 4;
+  repeated string unicode_scripts = 5;
+  bool mixed_scripts = 6;
+  string confusable_skeleton = 7;
+  string matched_brand = 8;
+  int32 levenshtein_distance = 9;
+  float confidence = 10;
+  string detail = 11;
+}
+
+message BatchHomographRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  repeated string domains = 3;
+}
+
+message BatchHomographResponse {
+  repeated HomographAnalysisResponse results = 1;
+  int32 homographs_detected = 2;
+}

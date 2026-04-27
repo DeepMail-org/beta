@@ -1,0 +1,75 @@
+syntax = "proto3";
+package deepmail.intel;
+
+service IntelService {
+  rpc LookupIp(IntelIpRequest) returns (IntelIpResponse);
+  rpc LookupDomain(IntelDomainRequest) returns (IntelDomainResponse);
+  rpc LookupHash(IntelHashRequest) returns (IntelHashResponse);
+  rpc LookupUrl(IntelUrlRequest) returns (IntelUrlResponse);
+}
+
+message IntelIpRequest {
+  string ip_address = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+  repeated string providers = 4; // empty = all available
+}
+
+message IntelIpResponse {
+  string ip_address = 1;
+  repeated ProviderResult results = 2;
+  float aggregate_risk_score = 3;
+}
+
+message IntelDomainRequest {
+  string domain = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+  repeated string providers = 4;
+}
+
+message IntelDomainResponse {
+  string domain = 1;
+  repeated ProviderResult results = 2;
+  float aggregate_risk_score = 3;
+}
+
+message IntelHashRequest {
+  string hash = 1;
+  string hash_type = 2; // sha256, md5
+  string email_id = 3;
+  string tenant_id = 4;
+  repeated string providers = 5;
+}
+
+message IntelHashResponse {
+  string hash = 1;
+  repeated ProviderResult results = 2;
+  float aggregate_risk_score = 3;
+}
+
+message IntelUrlRequest {
+  string url = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+  repeated string providers = 4;
+}
+
+message IntelUrlResponse {
+  string url = 1;
+  repeated ProviderResult results = 2;
+  float aggregate_risk_score = 3;
+}
+
+message ProviderResult {
+  string provider = 1; // abuseipdb, virustotal, ipinfo, greynoise, shodan
+  bool available = 2;
+  float risk_score = 3;
+  string raw_response = 4; // JSON string
+  int32 detections = 5;
+  int32 total_engines = 6;
+  repeated string tags = 7;
+  string detail = 8;
+  bool from_cache = 9;
+  int64 cache_ttl_remaining = 10;
+}

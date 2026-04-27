@@ -1,0 +1,76 @@
+syntax = "proto3";
+package deepmail.billing;
+
+import "google/protobuf/timestamp.proto";
+
+service BillingService {
+  rpc RecordUsage(RecordUsageRequest) returns (RecordUsageResponse);
+  rpc GetUsageSummary(GetUsageSummaryRequest) returns (GetUsageSummaryResponse);
+  rpc GetInvoice(GetInvoiceRequest) returns (GetInvoiceResponse);
+  rpc ListInvoices(ListInvoicesRequest) returns (ListInvoicesResponse);
+}
+
+message RecordUsageRequest {
+  string tenant_id = 1;
+  string event_type = 2;
+  string nats_message_id = 3;
+  string email_id = 4;
+  int32 cost_paise = 5;
+  string description = 6;
+  map<string, string> metadata = 7;
+}
+
+message RecordUsageResponse {
+  string usage_id = 1;
+  bool deduplicated = 2;
+}
+
+message GetUsageSummaryRequest {
+  string tenant_id = 1;
+  google.protobuf.Timestamp period_start = 2;
+  google.protobuf.Timestamp period_end = 3;
+}
+
+message GetUsageSummaryResponse {
+  string tenant_id = 1;
+  int64 total_cost_paise = 2;
+  int32 total_emails_analyzed = 3;
+  repeated UsageBreakdown breakdown = 4;
+}
+
+message UsageBreakdown {
+  string event_type = 1;
+  int32 count = 2;
+  int64 total_cost_paise = 3;
+}
+
+message GetInvoiceRequest {
+  string invoice_id = 1;
+  string tenant_id = 2;
+}
+
+message GetInvoiceResponse {
+  Invoice invoice = 1;
+}
+
+message ListInvoicesRequest {
+  string tenant_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message ListInvoicesResponse {
+  repeated Invoice invoices = 1;
+  int32 total_count = 2;
+}
+
+message Invoice {
+  string invoice_id = 1;
+  string tenant_id = 2;
+  google.protobuf.Timestamp period_start = 3;
+  google.protobuf.Timestamp period_end = 4;
+  int64 total_cost_paise = 5;
+  string razorpay_payment_id = 6;
+  string status = 7;
+  google.protobuf.Timestamp created_at = 8;
+}

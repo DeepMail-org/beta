@@ -1,0 +1,61 @@
+syntax = "proto3";
+package deepmail.ioc;
+
+service IocService {
+  rpc ExtractIocs(IocExtractionRequest) returns (IocExtractionResponse);
+  rpc CorrelateIocs(IocCorrelationRequest) returns (IocCorrelationResponse);
+}
+
+message IocExtractionRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  string body_text = 3;
+  string body_html = 4;
+  repeated string header_values = 5;
+}
+
+message IocExtractionResponse {
+  string email_id = 1;
+  repeated Ioc iocs = 2;
+  repeated C2Heuristic c2_heuristics = 3;
+}
+
+message Ioc {
+  string ioc_id = 1;
+  string ioc_type = 2; // ip, url, domain, hash_sha256, hash_md5, email
+  string value = 3;
+  string context = 4; // where found: body, header, attachment_name, etc.
+  bool defanged = 5;
+  string original_value = 6;
+}
+
+message C2Heuristic {
+  string pattern = 1;
+  string matched_value = 2;
+  float confidence = 3;
+  string detail = 4;
+}
+
+message IocCorrelationRequest {
+  string tenant_id = 1;
+  repeated string ioc_values = 2;
+}
+
+message IocCorrelationResponse {
+  repeated IocCorrelation correlations = 1;
+  repeated CampaignCluster campaigns = 2;
+}
+
+message IocCorrelation {
+  string ioc_value = 1;
+  string ioc_type = 2;
+  repeated string related_email_ids = 3;
+  int32 occurrence_count = 4;
+}
+
+message CampaignCluster {
+  string cluster_id = 1;
+  repeated string email_ids = 2;
+  repeated string shared_iocs = 3;
+  float cluster_confidence = 4;
+}

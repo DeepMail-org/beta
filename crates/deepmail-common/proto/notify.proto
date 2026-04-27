@@ -1,0 +1,63 @@
+syntax = "proto3";
+package deepmail.notify;
+
+service NotifyService {
+  rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse);
+  rpc SendOtpEmail(SendOtpEmailRequest) returns (SendOtpEmailResponse);
+  rpc SendAlertEmail(SendAlertEmailRequest) returns (SendAlertEmailResponse);
+  rpc ConfigureWebhook(ConfigureWebhookRequest) returns (ConfigureWebhookResponse);
+}
+
+message SendNotificationRequest {
+  string tenant_id = 1;
+  string event_type = 2; // analysis_complete, threat_detected, etc.
+  string email_id = 3;
+  string title = 4;
+  string body = 5;
+  string severity = 6;
+  map<string, string> metadata = 7;
+}
+
+message SendNotificationResponse {
+  bool success = 1;
+  int32 websocket_clients_notified = 2;
+  bool slack_sent = 3;
+  bool webhook_sent = 4;
+}
+
+message SendOtpEmailRequest {
+  string to_email = 1;
+  string otp_code = 2;
+  string purpose = 3; // registration, login, password_reset
+  int32 expires_minutes = 4;
+}
+
+message SendOtpEmailResponse {
+  bool success = 1;
+  string message_id = 2;
+}
+
+message SendAlertEmailRequest {
+  string to_email = 1;
+  string subject = 2;
+  string body_html = 3;
+  string body_text = 4;
+}
+
+message SendAlertEmailResponse {
+  bool success = 1;
+  string message_id = 2;
+}
+
+message ConfigureWebhookRequest {
+  string tenant_id = 1;
+  string webhook_url = 2;
+  string secret = 3;
+  repeated string event_types = 4;
+  bool active = 5;
+}
+
+message ConfigureWebhookResponse {
+  string webhook_id = 1;
+  bool success = 2;
+}

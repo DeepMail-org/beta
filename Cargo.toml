@@ -1,0 +1,51 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/deepmail-common",
+    "crates/deepmail-gateway",
+    "crates/deepmail-auth",
+    "crates/deepmail-tenant",
+    "crates/deepmail-ingest",
+    "crates/deepmail-parser",
+    "crates/deepmail-otp-smtp",
+    "crates/deepmail-header",
+    "crates/deepmail-dkim",
+    "crates/deepmail-geo",
+    "crates/deepmail-ip",
+    "crates/deepmail-intel",
+    "crates/deepmail-ioc",
+    "crates/deepmail-homograph",
+    "crates/deepmail-body",
+    "crates/deepmail-sandbox-url",
+    "crates/deepmail-sandbox-file",
+    "crates/deepmail-sandbox-dynamic",
+    "crates/deepmail-hashdb",
+    "crates/deepmail-scoring",
+    "crates/deepmail-graph",
+    "crates/deepmail-report",
+    "crates/deepmail-billing",
+    "crates/deepmail-notify",
+]
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+tonic = { version = "0.12", features = ["transport", "tls"] }
+prost = "0.13"
+prost-types = "0.13"
+async-nats = "0.38"
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "tls-rustls", "macros", "uuid", "chrono", "json"] }
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+config = "0.14"
+axum = { version = "0.8", features = ["multipart", "ws"] }
+async-graphql = { version = "7", features = ["tracing"] }
+async-graphql-axum = "7"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+tokio-tungstenite = "0.26"
+deepmail-common = { path = "crates/deepmail-common" }

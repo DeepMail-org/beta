@@ -1,0 +1,85 @@
+syntax = "proto3";
+package deepmail.ml;
+
+service MlService {
+  rpc ClassifyPhishing(PhishingRequest) returns (PhishingResponse);
+  rpc ClassifyAttachment(AttachmentClassifyRequest) returns (AttachmentClassifyResponse);
+  rpc DetectSenderAnomaly(SenderAnomalyRequest) returns (SenderAnomalyResponse);
+  rpc ClusterCampaign(CampaignClusterRequest) returns (CampaignClusterResponse);
+  rpc AugmentScore(ScoreAugmentRequest) returns (ScoreAugmentResponse);
+}
+
+message PhishingRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  string subject = 3;
+  string body_text = 4;
+  string from_address = 5;
+}
+
+message PhishingResponse {
+  string email_id = 1;
+  float phishing_probability = 2;
+  string classification = 3; // phishing, suspicious, legitimate
+  repeated string indicators = 4;
+}
+
+message AttachmentClassifyRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  string filename = 3;
+  string file_type = 4;
+  int64 file_size = 5;
+  float entropy = 6;
+  bool has_macros = 7;
+  repeated string yara_matches = 8;
+}
+
+message AttachmentClassifyResponse {
+  float malware_probability = 1;
+  string classification = 2; // malicious, suspicious, benign
+  repeated string features_used = 3;
+}
+
+message SenderAnomalyRequest {
+  string tenant_id = 1;
+  string from_address = 2;
+  string from_domain = 3;
+  string sending_ip = 4;
+  string x_mailer = 5;
+  int64 send_timestamp = 6;
+}
+
+message SenderAnomalyResponse {
+  float anomaly_score = 1;
+  bool is_anomalous = 2;
+  repeated string anomaly_factors = 3;
+}
+
+message CampaignClusterRequest {
+  string tenant_id = 1;
+  string email_id = 2;
+  string subject = 3;
+  string body_text = 4;
+  repeated string iocs = 5;
+}
+
+message CampaignClusterResponse {
+  string cluster_id = 1;
+  float similarity_score = 2;
+  int32 cluster_size = 3;
+  repeated string related_email_ids = 4;
+}
+
+message ScoreAugmentRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  float current_score = 3;
+  map<string, float> signal_scores = 4;
+}
+
+message ScoreAugmentResponse {
+  float augmented_score = 1;
+  float adjustment = 2;
+  string reasoning = 3;
+}

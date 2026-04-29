@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 
 export function LandingStats() {
 	const stats = [
@@ -10,8 +9,8 @@ export function LandingStats() {
 	];
 
 	return (
-		<div className="w-full bg-(--surface) border-y border-(--border) py-20">
-			<div className="max-w-[1120px] mx-auto bg-(--border) grid sm:grid-cols-2 lg:grid-cols-4 gap-px">
+		<div className="w-full bg-(--surface) py-32">
+			<div className="max-w-280 mx-auto bg-(--border) grid sm:grid-cols-2 lg:grid-cols-4 gap-px">
 				{stats.map((s, i) => (
 					<div
 						key={i}

@@ -10,14 +10,9 @@ import {
 
 export function LandingHowItWorks() {
 	return (
-		<section className="relative flex flex-col items-center justify-center py-32 lg:py-48 w-full overflow-hidden min-h-[800px] bg-transparent">
-			<div className="absolute z-21 pointer-events-none top-0 flex w-full flex-col items-center justify-start mt-20 md:mt-24 font-display">
-				<h2 className="font-semibold text-4xl md:text-6xl tracking-tight text-white text-center px-4 drop-shadow-md">
-					Real-Time Threat Pipeline
-				</h2>
-			</div>
+		<section className="relative flex flex-col items-center justify-center py-48 lg:py-12 w-full overflow-hidden min-h-200 bg-transparent">
 
-			<div className="relative z-10 w-full max-w-5xl mx-auto px-6 h-[500px] md:h-[650px] flex items-center justify-center pointer-events-none mt-20 md:mt-32">
+			<div className="relative z-10 w-full max-w-5xl mx-auto px-6 h-125 md:h-162.5 flex items-center justify-center pointer-events-none mt-20 md:mt-32">
 				<Radar className="absolute" />
 
 				<div className="absolute left-1/2 top-1/2 -translate-x-48 -translate-y-40">
@@ -74,10 +69,10 @@ export function LandingHowItWorks() {
 						delay={0.6}
 					/>
 				</div>
-			</div>
 
-			<div className="absolute bottom-0 inset-x-0 h-40 bg-linear-to-t from-(--background) via-(--background)/80 to-transparent z-10 pointer-events-none" />
-			<div className="absolute top-0 inset-x-0 h-40 bg-linear-to-b from-(--background) via-(--background)/80 to-transparent z-10 pointer-events-none" />
+				<div className="absolute bottom-0 inset-x-0 h-40 bg-linear-to-t from-(--background) via-(--background)/80 to-transparent z-10 pointer-events-none" />
+				<div className="absolute top-0 inset-x-0 h-40 bg-linear-to-b from-(--background) via-(--background)/80 to-transparent z-10 pointer-events-none" />
+			</div>
 		</section>
 	);
 }

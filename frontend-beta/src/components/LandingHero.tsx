@@ -1,9 +1,7 @@
 "use client";
-import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
-import Hls from "hls.js";
 
 const containerVariants: Variants = {
 	hidden: { opacity: 0 },
@@ -18,55 +16,48 @@ const itemVariants: Variants = {
 	show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-const HlsVideoPlayer = React.memo(({ src }: { src: string }) => {
-	const videoRef = useRef<HTMLVideoElement>(null);
-
-	useEffect(() => {
-		const video = videoRef.current;
-		if (!video) return;
-
-		let hls: Hls;
-
-		if (Hls.isSupported()) {
-			hls = new Hls();
-			hls.loadSource(src);
-			hls.attachMedia(video);
-			hls.on(Hls.Events.MANIFEST_PARSED, () => {
-				video.play().catch((e) => console.log("video play error", e));
-			});
-		} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-			video.src = src;
-			video.addEventListener("loadedmetadata", () => {
-				video.play().catch((e) => console.log("video play error", e));
-			});
-		}
-
-		return () => {
-			if (hls) hls.destroy();
-		};
-	}, [src]);
-
-	return (
-		<video
-			ref={videoRef}
-			autoPlay
-			loop
-			muted
-			playsInline
-			className="absolute inset-0 w-full h-full object-cover z-0 opacity-100"
-		/>
-	);
-});
-HlsVideoPlayer.displayName = "HlsVideoPlayer";
-
 export function LandingHero({ onUploadClick }: { onUploadClick: () => void }) {
 	return (
 		<section className="relative min-h-screen flex flex-col pt-32 pb-10 overflow-hidden bg-black">
-			{/* Static Dark Background Layer underneath video */}
-			<div className="absolute inset-0 z-0 bg-black" />
-
-			{/* Background Video using MUX HLS Stream with 100% opacity */}
-			<HlsVideoPlayer src="https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8" />
+			{/* Light-streak background — pure CSS, zero SVG filter issues */}
+			<div className="absolute inset-0 z-0 bg-black overflow-hidden" aria-hidden>
+				{/* Primary streak — bright diagonal line with glow halo */}
+				<div style={{
+					position: "absolute",
+					width: "220%",
+					height: "1px",
+					left: "-60%",
+					top: "49%",
+					transform: "rotate(-15.45deg)",
+					transformOrigin: "center center",
+					background: "rgba(255,255,255,0.85)",
+					boxShadow: "0 0 55px 16px rgba(255,255,255,0.18), 0 0 18px 4px rgba(255,255,255,0.32)",
+				}} />
+				{/* Secondary streak — softer */}
+				<div style={{
+					position: "absolute",
+					width: "220%",
+					height: "1px",
+					left: "-60%",
+					top: "65%",
+					transform: "rotate(-15.45deg)",
+					transformOrigin: "center center",
+					background: "rgba(255,255,255,0.55)",
+					boxShadow: "0 0 38px 10px rgba(255,255,255,0.11), 0 0 12px 2px rgba(255,255,255,0.20)",
+				}} />
+				{/* Tertiary ghost streak */}
+				<div style={{
+					position: "absolute",
+					width: "220%",
+					height: "1px",
+					left: "-60%",
+					top: "75%",
+					transform: "rotate(-15.45deg)",
+					transformOrigin: "center center",
+					background: "rgba(255,255,255,0.28)",
+					boxShadow: "0 0 22px 6px rgba(255,255,255,0.06), 0 0 7px 1px rgba(255,255,255,0.10)",
+				}} />
+			</div>
 
 			{/* Center Content */}
 			<motion.div
@@ -95,16 +86,16 @@ export function LandingHero({ onUploadClick }: { onUploadClick: () => void }) {
 
 				<motion.p
 					variants={itemVariants}
-					className="text-[18px] text-[#D1D5DB] font-body opacity-80 leading-8 max-w-md mt-[9px]"
+					className="text-[18px] text-[#D1D5DB] font-body opacity-80 leading-8 max-w-md mt-4 py-5"
 				>
-					The most powerful AI ever deployed
+					The most powerful Email Threat
 					<br />
-					in email threat intelligence
+					Intelligence Engine.
 				</motion.p>
 
 				<motion.div
 					variants={itemVariants}
-					className="mt-[25px] flex items-center justify-center"
+					className="mt-6.25 flex items-center justify-center"
 				>
 					<ButtonWithIcon onConsultClick={onUploadClick} />
 				</motion.div>

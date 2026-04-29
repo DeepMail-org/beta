@@ -1,28 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { LiquidButton } from "./ui/liquid-glass-button";
+import Link from "next/link";
 
 export function LandingNavbar({
 	onUploadClick,
 }: {
 	onUploadClick: () => void;
 }) {
-	const [scrolled, setScrolled] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-
-	useEffect(() => {
-		const handleScroll = () => {
-			setScrolled(window.scrollY > 60);
-		};
-		window.addEventListener("scroll", handleScroll, { passive: true });
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
 
 	return (
 		<>
 			<nav
-				className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 py-5 px-8 flex items-center justify-between ${scrolled ? "bg-black/80 backdrop-blur-xl" : "bg-transparent"}`}
+				className="fixed top-0 inset-x-0 z-50 py-3 px-6 flex items-center justify-between bg-transparent"
 			>
 				{/* Left: Logo */}
 				<div
@@ -41,17 +32,28 @@ export function LandingNavbar({
 					</span>
 				</div>
 
-				{/* Right: CTA */}
-				<div className="hidden lg:flex items-center gap-3">
-					<button className="px-6 py-2.5 rounded-full text-[14px] font-medium transition-colors liquid-glass text-white border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white/10">
-						Log In
-					</button>
-					<button
-						onClick={onUploadClick}
-						className="px-6 py-2.5 rounded-full text-[14px] font-medium transition-colors liquid-glass text-white border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white/10"
+				{/* Right: nav links + CTA */}
+				<div className="hidden lg:flex items-center gap-6">
+					<Link
+						href="/contact"
+						className="text-[14px] font-medium text-white/50 hover:text-white/90 transition-colors duration-200"
 					>
-						Sign Up
-					</button>
+						Contact
+					</Link>
+					<div className="flex items-center gap-2.5">
+						<Link
+							href="/login"
+							className="px-5 py-2.5 rounded-full text-[14px] font-medium transition-all duration-200 liquid-glass text-white border border-white/18 hover:bg-white/8 hover:border-white/32 hover:shadow-[0_0_24px_rgba(255,255,255,0.12)]"
+						>
+							Log In
+						</Link>
+						<Link
+							href="/signup"
+							className="px-5 py-2.5 rounded-full text-[14px] font-medium transition-all duration-200 liquid-glass text-white border border-white/18 hover:bg-white/8 hover:border-white/32 hover:shadow-[0_0_24px_rgba(255,255,255,0.12)]"
+						>
+							Sign Up
+						</Link>
+					</div>
 				</div>
 
 				{/* Mobile Toggle */}
@@ -63,27 +65,32 @@ export function LandingNavbar({
 				</button>
 			</nav>
 
-			{/* Divider Line */}
-			<div
-				className={`fixed top-[73px] mt-[3px] inset-x-0 z-40 h-[1px] bg-linear-to-r from-transparent via-(--foreground)/20 to-transparent transition-opacity duration-300 ${scrolled ? "opacity-100" : "opacity-0"}`}
-			/>
 
 			{/* Mobile Menu */}
 			{mobileOpen && (
-				<div className="fixed inset-0 top-[76px] z-40 glass-strong p-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 lg:hidden">
-					<div className="mt-8 flex flex-col gap-4">
-						<button className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+				<div className="fixed inset-0 top-19 z-40 glass-strong p-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 lg:hidden">
+					<div className="mt-4 flex flex-col gap-3">
+						<Link
+							href="/contact"
+							onClick={() => setMobileOpen(false)}
+							className="w-full py-3 rounded-full text-center font-medium text-white/60 border border-white/10 hover:text-white hover:border-white/20 transition-all duration-200"
+						>
+							Contact
+						</Link>
+						<Link
+							href="/login"
+							onClick={() => setMobileOpen(false)}
+							className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/18 hover:bg-white/8 transition-all duration-200"
+						>
 							Log In
-						</button>
-						<button
-							onClick={() => {
-								setMobileOpen(false);
-								onUploadClick();
-							}}
-							className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+						</Link>
+						<Link
+							href="/signup"
+							onClick={() => setMobileOpen(false)}
+							className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/18 hover:bg-white/8 transition-all duration-200"
 						>
 							Sign Up
-						</button>
+						</Link>
 					</div>
 				</div>
 			)}

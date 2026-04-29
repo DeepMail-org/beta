@@ -23,7 +23,7 @@ export const Radar = ({ className }: { className?: string }) => {
 	return (
 		<div
 			className={twMerge(
-				"relative flex h-20 w-20 items-center justify-center rounded-full",
+				"relative flex h-10 w-10 items-center justify-center rounded-full",
 				className,
 			)}
 		>
@@ -39,9 +39,9 @@ export const Radar = ({ className }: { className?: string }) => {
 			{/* Rotating sweep line */}
 			<div
 				style={{ transformOrigin: "right center" }}
-				className="animate-radar-spin absolute right-1/2 top-1/2 z-40 flex h-[5px] w-[20rem] items-end justify-center overflow-hidden bg-transparent"
+				className="animate-radar-spin absolute right-1/2 top-1/2 z-40 flex h-1 w-[20rem] items-end justify-center overflow-hidden bg-transparent"
 			>
-				<div className="relative z-40 h-[1px] w-full bg-linear-to-r from-transparent via-white/40 to-transparent" />
+				<div className="relative z-40 h-px w-full bg-linear-to-r from-transparent via-white/40 to-transparent" />
 			</div>
 			{/* Concentric circles */}
 			{circles.map((_, idx) => (
@@ -49,7 +49,7 @@ export const Radar = ({ className }: { className?: string }) => {
 					style={{
 						height: `${(idx + 1) * 5}rem`,
 						width: `${(idx + 1) * 5}rem`,
-						border: `1px solid rgba(255, 255, 255, ${(1 - (idx + 1) * 0.1) * 0.2})`,
+						border: `2px solid rgba(255, 255, 255, ${(1 - (idx + 1) * 0.1) * 0.2})`,
 					}}
 					key={`circle-${idx}`}
 					idx={idx}
@@ -75,10 +75,10 @@ export const IconContainer = ({
 			transition={{ duration: 0.2, delay: delay ?? 0 }}
 			className="relative z-50 flex flex-col items-center justify-center space-y-2"
 		>
-			<div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">
+			<div className="flex h-8 w-8 items-center justify-center rounded-2xl border border-white/10 bg-black shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">
 				{icon || (
 					<svg
-						className="h-8 w-8 text-neutral-500"
+						className="h-8 w-8 text-neutral-100"
 						fill="currentColor"
 						viewBox="0 0 20 20"
 					>
@@ -91,7 +91,7 @@ export const IconContainer = ({
 				)}
 			</div>
 			<div className="hidden rounded-md px-2 py-1 md:block">
-				<div className="text-center text-xs font-bold text-neutral-400">
+				<div className="text-center text-xs font-bold text-neutral-100">
 					{text || "Web Development"}
 				</div>
 			</div>

@@ -6,18 +6,24 @@ import {
 	SiRedis,
 	SiCloudflare,
 	SiDocker,
-	SiNodedotjs,
-	SiGithub,
+    SiVirustotal,
+    SiBun,
+    SiCodesandbox,
+    SiKalilinux,
+    SiKubernetes,
 } from "react-icons/si";
 
 const brands = [
-	{ id: "rust", name: "Rust", Icon: SiRust },
+	{ id: "bun", name: "Frontend API", Icon: SiBun },
 	{ id: "react", name: "React", Icon: SiReact },
-	{ id: "redis", name: "Redis Streams", Icon: SiRedis },
+	{ id: "redis", name: "Redis", Icon: SiRedis },
+	{ id: "rust", name: "Rust", Icon: SiRust },
+	{ id: "vt", name: "Virus Total", Icon: SiVirustotal },
+	{ id: "kali", name: "Kali Linux", Icon: SiKalilinux },
 	{ id: "aws", name: "Cloudflare", Icon: SiCloudflare },
+	{ id: "sandbox", name: "Sandbox", Icon: SiCodesandbox },
 	{ id: "docker", name: "Docker", Icon: SiDocker },
-	{ id: "node", name: "Backend API", Icon: SiNodedotjs },
-	{ id: "github", name: "GitHub Action", Icon: SiGithub },
+	{ id: "kubernetes", name: "Kubernetes", Icon: SiKubernetes },
 ];
 
 export default function HoverBrandLogo() {

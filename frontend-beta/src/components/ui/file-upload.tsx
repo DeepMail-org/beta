@@ -1,211 +1,151 @@
-import { cn } from "@/lib/utils";
+"use client";
+
 import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { IconUpload } from "@tabler/icons-react";
-import { useDropzone } from "react-dropzone";
+import { motion, AnimatePresence } from "framer-motion";
+import { Upload, File, X, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const mainVariant = {
-	initial: {
-		x: 0,
-		y: 0,
-	},
-	animate: {
-		x: 20,
-		y: -20,
-		opacity: 0.9,
-	},
-};
-
-const secondaryVariant = {
-	initial: {
-		opacity: 0,
-	},
-	animate: {
-		opacity: 1,
-	},
-};
-
-export const FileUpload = ({
-	onChange,
-}: {
+interface FileUploadProps {
 	onChange?: (files: File[]) => void;
-}) => {
+	accept?: string;
+	maxSize?: number;
+}
+
+export function FileUpload({
+	onChange,
+	accept = ".eml,message/rfc822",
+	maxSize = 25,
+}: FileUploadProps) {
+	const [isDragging, setIsDragging] = useState(false);
 	const [files, setFiles] = useState<File[]>([]);
-	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [error, setError] = useState<string | null>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 
-	const handleFileChange = (newFiles: File[]) => {
-		setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-		if (onChange) {
-			onChange(newFiles);
+	const validateAndAdd = (incoming: File[]) => {
+		setError(null);
+		const oversized = incoming.find((f) => f.size > maxSize * 1024 * 1024);
+		if (oversized) {
+			setError(`File exceeds ${maxSize}MB limit`);
+			return;
 		}
+		const next = [...files, ...incoming];
+		setFiles(next);
+		onChange?.(next);
 	};
 
-	const handleClick = () => {
-		fileInputRef.current?.click();
+	const removeFile = (idx: number) => {
+		const next = files.filter((_, i) => i !== idx);
+		setFiles(next);
+		onChange?.(next);
 	};
 
-	const { getRootProps, isDragActive } = useDropzone({
-		multiple: false,
-		noClick: true,
-		accept: {
-			"application/pdf": [".pdf"],
-			"message/rfc822": [".eml"],
-		},
-		onDrop: handleFileChange,
-		onDropRejected: (error) => {
-			console.log(error);
-		},
-	});
+	const onDrop = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragging(false);
+		validateAndAdd(Array.from(e.dataTransfer.files));
+	};
+
+	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files) validateAndAdd(Array.from(e.target.files));
+		e.target.value = "";
+	};
+
+	const formatSize = (bytes: number) => {
+		if (bytes < 1024) return `${bytes} B`;
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+	};
 
 	return (
-		<div className="w-full" {...getRootProps()}>
-			<motion.div
-				onClick={handleClick}
-				whileHover="animate"
-				className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
+		<div className="w-full space-y-3">
+			{/* Drop zone */}
+			<div
+				onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+				onDragLeave={() => setIsDragging(false)}
+				onDrop={onDrop}
+				onClick={() => inputRef.current?.click()}
+				className={cn(
+					"relative cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-300 group",
+					isDragging
+						? "border-white/60 bg-white/5 scale-[1.01]"
+						: "border-white/15 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]",
+				)}
 			>
 				<input
-					ref={fileInputRef}
-					id="file-upload-handle"
+					ref={inputRef}
 					type="file"
-					onChange={(e) =>
-						handleFileChange(Array.from(e.target.files || []))
-					}
+					accept={accept}
+					multiple
 					className="hidden"
+					onChange={onInputChange}
 				/>
-				<div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
-					<GridPattern />
+
+				{/* Gradient corner accents */}
+				<div className="pointer-events-none absolute -inset-px rounded-2xl overflow-hidden">
+					<div className="absolute top-0 left-0 w-24 h-24 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_70%)]" />
+					<div className="absolute bottom-0 right-0 w-24 h-24 bg-[radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.04),transparent_70%)]" />
 				</div>
-				<div className="flex flex-col items-center justify-center">
-					<p className="relative z-20 font-sans font-bold text-on-surface text-base">
-						Upload file
+
+				<div className="flex flex-col items-center justify-center py-14 px-6 text-center">
+					<motion.div
+						animate={isDragging ? { scale: 1.15, rotate: -8 } : { scale: 1, rotate: 0 }}
+						transition={{ type: "spring", stiffness: 300, damping: 20 }}
+						className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+					>
+						<Upload className="h-7 w-7 text-white/60 group-hover:text-white/90 transition-colors duration-200" strokeWidth={1.5} />
+					</motion.div>
+
+					<p className="text-[15px] font-medium text-white/80 mb-1">
+						{isDragging ? "Drop your files here" : "Drag & drop or click to upload"}
 					</p>
-					<p className="relative z-20 font-sans font-normal text-on-surface-variant text-base mt-2">
-						Drag or drop your files here or click to upload
+					<p className="text-xs text-white/35">
+						Supports .eml files · Max {maxSize}MB each
 					</p>
-					<div className="relative w-full mt-10 max-w-xl mx-auto">
-						{files.length > 0 &&
-							files.map((file, idx) => (
-								<motion.div
-									key={"file" + idx}
-									layoutId={
-										idx === 0
-											? "file-upload"
-											: "file-upload-" + idx
-									}
-									className={cn(
-										"relative overflow-hidden z-40 bg-surface-container-lowest border border-outline-variant/20 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
-										"shadow-sm",
-									)}
-								>
-									<div className="flex justify-between w-full items-center gap-4">
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-											className="text-base text-on-surface truncate max-w-xs"
-										>
-											{file.name}
-										</motion.p>
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-											className="rounded-lg px-2 py-1 w-fit shrink-0 text-sm text-on-surface bg-surface-container shadow-input"
-										>
-											{(
-												file.size /
-												(1024 * 1024)
-											).toFixed(2)}{" "}
-											MB
-										</motion.p>
-									</div>
-
-									<div className="flex text-sm md:flex-row flex-col items-start md:items-center w-full mt-2 justify-between text-on-surface-variant">
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-										className="px-1 py-0.5 rounded-md bg-surface-container text-on-surface-variant"
-									>
-											{file.type}
-										</motion.p>
-
-										<motion.p
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											layout
-										>
-											modified{" "}
-											{new Date(
-												file.lastModified,
-											).toLocaleDateString()}
-										</motion.p>
-									</div>
-								</motion.div>
-							))}
-						{!files.length && (
-							<motion.div
-								layoutId="file-upload"
-								variants={mainVariant}
-								transition={{
-									type: "spring",
-									stiffness: 300,
-									damping: 20,
-								}}
-								className={cn(
-									"relative z-40 bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md",
-									"shadow-[0px_10px_50px_rgba(0,0,0,0.1)]",
-								)}
-							>
-								{isDragActive ? (
-									<motion.p
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										className="text-on-surface-variant flex flex-col items-center"
-									>
-										Drop it
-										<IconUpload className="h-4 w-4 text-on-surface-variant" />
-									</motion.p>
-								) : (
-									<IconUpload className="h-8 w-8 text-on-surface" />
-								)}
-							</motion.div>
-						)}
-
-						{!files.length && (
-						<motion.div
-							variants={secondaryVariant}
-							className="absolute opacity-0 border border-dashed border-primary inset-0 z-30 bg-transparent flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
-						></motion.div>
-					)}
-					</div>
 				</div>
-			</motion.div>
-		</div>
-	);
-};
+			</div>
 
-export function GridPattern() {
-	const columns = 41;
-	const rows = 11;
-	return (
-		<div className="flex bg-surface-container-low shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px  scale-105">
-			{Array.from({ length: rows }).map((_, row) =>
-				Array.from({ length: columns }).map((_, col) => {
-					const index = row * columns + col;
-					return (
-						<div
-							key={`${col}-${row}`}
-							className={`w-10 h-10 flex shrink-0 rounded-[2px] ${
-								index % 2 === 0
-									? "bg-surface-container-lowest"
-									: "bg-surface-container-lowest shadow-[0px_0px_1px_2px_rgba(189,147,249,0.16)_inset]"
-							}`}
-						/>
-					);
-				}),
-			)}
+			{/* File list */}
+			<AnimatePresence>
+				{files.map((file, idx) => (
+					<motion.div
+						key={`${file.name}-${idx}`}
+						initial={{ opacity: 0, y: -6, scale: 0.97 }}
+						animate={{ opacity: 1, y: 0, scale: 1 }}
+						exit={{ opacity: 0, x: 20, scale: 0.95 }}
+						transition={{ duration: 0.2 }}
+						className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-sm"
+					>
+						<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+							<File className="h-4 w-4 text-white/60" strokeWidth={1.5} />
+						</div>
+						<div className="flex-1 min-w-0">
+							<p className="text-sm font-medium text-white/90 truncate">{file.name}</p>
+							<p className="text-xs text-white/35 mt-0.5">{formatSize(file.size)}</p>
+						</div>
+						<CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" strokeWidth={1.5} />
+						<button
+							onClick={(e) => { e.stopPropagation(); removeFile(idx); }}
+							className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/40 hover:text-white/80 hover:bg-white/10 transition-all duration-150"
+						>
+							<X className="h-3.5 w-3.5" />
+						</button>
+					</motion.div>
+				))}
+			</AnimatePresence>
+
+			{/* Error */}
+			<AnimatePresence>
+				{error && (
+					<motion.p
+						initial={{ opacity: 0, y: -4 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0 }}
+						className="text-xs text-red-400 px-1"
+					>
+						{error}
+					</motion.p>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }

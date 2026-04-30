@@ -6,11 +6,13 @@ import { LandingStats } from "@/components/LandingStats";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { UploadModal } from "@/components/LandingModals";
 import { useToast, ToastContainer } from "@/components/LandingModals";
-import { Features } from "@/components/blocks/features-8";
 import HoverBrandLogo from "@/components/ui/hover-brand-logo";
-import { PerspectiveMarquee } from "@/components/ui/remocn-perspective-marquee";
-import { LandingHowItWorks } from "@/components/LandingHowItWorks";
 import FAQWithSpiral from "@/components/ui/faq-section";
+import { EtheralShadow } from "@/components/ui/etheral-shadow";
+import FeaturesSectionDemo2 from "@/components/features-section-demo-2";
+import FeaturesSectionDemo3 from "@/components/features-section-demo-3";
+import BentoGridThirdDemo from "@/components/bento-grid-demo-3";
+import { FeaturesAndBenefits } from "@/components/features-and-benefits";
 
 function PageSpotlight() {
 	const [pos, setPos] = useState({ x: -400, y: -400 });
@@ -82,9 +84,28 @@ export default function DeepMailLandingPage() {
 				</FadeIn>
 
 				<FadeIn>
-					<div className="py-20 border-y border-white/5 overflow-hidden">
-						<PerspectiveMarquee />
-					</div>
+					<section className="relative h-120 w-full overflow-hidden border-y border-white/5 md:h-140">
+						<EtheralShadow
+							color="rgba(255, 255, 255, 0.55)"
+							animation={{ scale: 100, speed: 90 }}
+							noise={{ opacity: 0.6, scale: 1.2 }}
+							sizing="fill"
+						>
+							<div className="flex flex-col items-center gap-5 px-6 text-center">
+								<span className="rounded-full border border-white/15 bg-black/40 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65 backdrop-blur-sm">
+									Threat intelligence
+								</span>
+								<h2 className="font-display text-5xl font-semibold tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)] md:text-7xl lg:text-8xl">
+									Shadows,
+									<br />
+									surfaced.
+								</h2>
+								<p className="max-w-md text-sm leading-relaxed text-white/65 md:text-base">
+									Every campaign leaves a trace. DeepMail finds it before your inbox does.
+								</p>
+							</div>
+						</EtheralShadow>
+					</section>
 				</FadeIn>
 
 				<FadeIn>
@@ -92,11 +113,47 @@ export default function DeepMailLandingPage() {
 				</FadeIn>
 
 				<FadeIn>
-					<Features />
+					<section className="border-y border-white/5 py-12">
+						<div className="mx-auto max-w-7xl px-6 mb-2 text-center">
+							<p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
+								Capabilities
+							</p>
+							<h2 className="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+								Everything a SOC needs in one pipeline
+							</h2>
+						</div>
+						<FeaturesSectionDemo2 />
+					</section>
 				</FadeIn>
 
 				<FadeIn>
-					<div className="py-20">
+					<FeaturesSectionDemo3 />
+				</FadeIn>
+
+
+				<FadeIn>
+					<section className="py-20 border-t border-white/5">
+						<div className="mx-auto mb-12 max-w-5xl px-6 text-center">
+							<p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
+								Inside the engine
+							</p>
+							<h2 className="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+								See how the pieces fit together
+							</h2>
+							<p className="mt-4 text-sm md:text-base text-white/40 max-w-xl mx-auto">
+								Five interlocking layers turn a raw .eml into a verdict you can act on. Hover any tile.
+							</p>
+						</div>
+						<BentoGridThirdDemo />
+					</section>
+				</FadeIn>
+
+                <FadeIn>
+					<FeaturesAndBenefits />
+				</FadeIn>
+
+				<FadeIn>
+					<div className="py-12">
 						<FAQWithSpiral />
 					</div>
 				</FadeIn>

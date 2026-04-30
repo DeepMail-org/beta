@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowUpRight, Shield } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const streakStyle = (top: string, opacity: number, shadow: string): React.CSSProperties => ({
 	position: "absolute",
@@ -37,8 +38,6 @@ export default function LoginPage() {
 		setSpot({ x: e.clientX - r.left, y: e.clientY - r.top });
 	};
 
-	const inputCls =
-		"w-full h-11 rounded-xl border border-white/10 bg-white/4 px-4 text-sm text-white placeholder:text-white/25 outline-none transition-all duration-200 hover:border-white/20 focus:border-white/30 focus:bg-white/6";
 
 	return (
 		<div className="min-h-screen bg-black flex flex-col items-center justify-center px-4 relative overflow-hidden">
@@ -51,14 +50,16 @@ export default function LoginPage() {
 				<div className="absolute top-2/3 left-1/3 w-72 h-72 rounded-full" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)", filter: "blur(40px)" }} />
 			</div>
 
-			{/* Side blur overlay — blurs background beside the card */}
+			{/* Card halo blur — only blurs the area immediately around the card */}
 			<div
 				className="pointer-events-none absolute inset-0"
 				style={{
 					backdropFilter: "blur(14px)",
 					WebkitBackdropFilter: "blur(14px)",
-					maskImage: "linear-gradient(90deg, black 0%, black 22%, transparent 36%, transparent 64%, black 78%, black 100%)",
-					WebkitMaskImage: "linear-gradient(90deg, black 0%, black 22%, transparent 36%, transparent 64%, black 78%, black 100%)",
+					maskImage:
+						"radial-gradient(ellipse 360px 480px at center, black 0%, black 35%, transparent 80%)",
+					WebkitMaskImage:
+						"radial-gradient(ellipse 360px 480px at center, black 0%, black 35%, transparent 80%)",
 				}}
 				aria-hidden
 			/>
@@ -107,13 +108,12 @@ export default function LoginPage() {
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="space-y-1.5">
 								<label className="text-xs font-medium text-white/45 uppercase tracking-wider">Email</label>
-								<input
+								<Input
 									type="email"
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 									placeholder="you@example.com"
 									required
-									className={inputCls}
 								/>
 							</div>
 
@@ -125,13 +125,13 @@ export default function LoginPage() {
 									</Link>
 								</div>
 								<div className="relative">
-									<input
+									<Input
 										type={showPassword ? "text" : "password"}
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
 										placeholder="••••••••"
 										required
-										className={`${inputCls} pr-11`}
+										className="pr-11"
 									/>
 									<button
 										type="button"

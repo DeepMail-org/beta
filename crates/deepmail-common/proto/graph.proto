@@ -1,79 +1,72 @@
 syntax = "proto3";
+
 package deepmail.graph;
 
 service GraphService {
-  rpc AddNodes(AddNodesRequest) returns (AddNodesResponse);
-  rpc AddEdges(AddEdgesRequest) returns (AddEdgesResponse);
-  rpc GetEntityGraph(GetEntityGraphRequest) returns (GetEntityGraphResponse);
-  rpc TraverseC2Path(TraverseC2PathRequest) returns (TraverseC2PathResponse);
-  rpc GetCampaignGraph(GetCampaignGraphRequest) returns (GetCampaignGraphResponse);
+  rpc BuildEmailGraph (BuildGraphRequest) returns (BuildGraphResponse);
+  rpc GetEmailGraph   (GetGraphRequest)   returns (GraphData);
+  rpc FindC2Paths     (C2PathRequest)     returns (C2PathResponse);
 }
 
-message AddNodesRequest {
-  string tenant_id = 1;
-  string email_id = 2;
-  repeated GraphNode nodes = 3;
+message BuildGraphRequest {
+  string   email_id          = 1;
+  string   tenant_id         = 2;
+  repeated GraphNode nodes   = 3;
+  repeated GraphEdge edges   = 4;
 }
 
-message AddNodesResponse {
-  int32 nodes_created = 1;
-  int32 nodes_updated = 2;
+message BuildGraphResponse {
+  bool   success         = 1;
+  int32  nodes_created   = 2;
+  int32  edges_created   = 3;
+  string error           = 4;
 }
 
-message AddEdgesRequest {
-  string tenant_id = 1;
-  string email_id = 2;
-  repeated GraphEdge edges = 3;
+message GetGraphRequest {
+  string email_id  = 1;
+  string tenant_id = 2;
 }
 
-message AddEdgesResponse {
-  int32 edges_created = 1;
+message GraphData {
+  repeated GraphNode    nodes     = 1;
+  repeated GraphEdge    edges     = 2;
+  repeated CampaignInfo campaigns = 3;
 }
 
 message GraphNode {
-  string node_id = 1;
-  string node_type = 2; // Email, IP, Domain, URL, Hash, Actor, C2Server, Campaign, ASN
-  string label = 3;
-  map<string, string> properties = 4;
+  string id          = 1;
+  string node_type   = 2;
+  string label       = 3;
+  float  risk_score  = 4;
+  map<string, string> properties = 5;
 }
 
 message GraphEdge {
-  string source_id = 1;
-  string target_id = 2;
-  string edge_type = 3; // SENT_FROM, RECEIVED_BY, CONTAINS_URL, RESOLVES_TO, etc.
-  map<string, string> properties = 4;
+  string source_id    = 1;
+  string target_id    = 2;
+  string relationship = 3;
+  float  weight       = 4;
+  map<string, string> properties = 5;
 }
 
-message GetEntityGraphRequest {
-  string tenant_id = 1;
-  string email_id = 2;
-  int32 depth = 3;
+message CampaignInfo {
+  string campaign_id = 1;
+  string name        = 2;
+  float  confidence  = 3;
+  int32  email_count = 4;
 }
 
-message GetEntityGraphResponse {
-  repeated GraphNode nodes = 1;
-  repeated GraphEdge edges = 2;
+message C2PathRequest {
+  string email_id = 1;
 }
 
-message TraverseC2PathRequest {
-  string tenant_id = 1;
-  string start_node_id = 2;
-  int32 max_depth = 3;
+message C2PathResponse {
+  repeated C2Path paths = 1;
 }
 
-message TraverseC2PathResponse {
-  repeated GraphNode path_nodes = 1;
-  repeated GraphEdge path_edges = 2;
-  int32 path_length = 3;
-}
-
-message GetCampaignGraphRequest {
-  string tenant_id = 1;
-  string campaign_id = 2;
-}
-
-message GetCampaignGraphResponse {
-  repeated GraphNode nodes = 1;
-  repeated GraphEdge edges = 2;
-  int32 email_count = 3;
+message C2Path {
+  repeated string hop_ips     = 1;
+  float    confidence         = 2;
+  string   malware_family     = 3;
+  repeated string mitre_ttps  = 4;
 }

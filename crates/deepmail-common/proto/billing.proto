@@ -1,76 +1,80 @@
 syntax = "proto3";
+
 package deepmail.billing;
 
 import "google/protobuf/timestamp.proto";
 
-service BillingService {
-  rpc RecordUsage(RecordUsageRequest) returns (RecordUsageResponse);
-  rpc GetUsageSummary(GetUsageSummaryRequest) returns (GetUsageSummaryResponse);
-  rpc GetInvoice(GetInvoiceRequest) returns (GetInvoiceResponse);
-  rpc ListInvoices(ListInvoicesRequest) returns (ListInvoicesResponse);
+service BillingMeter {
+  rpc RecordEvent     (MeterEvent)   returns (MeterAck);
+  rpc RecordBatch     (MeterBatch)   returns (MeterAck);
+  rpc GetUsageSummary (UsageRequest) returns (UsageSummary);
+  rpc CheckQuota      (QuotaRequest) returns (QuotaResult);
 }
 
-message RecordUsageRequest {
-  string tenant_id = 1;
-  string event_type = 2;
-  string nats_message_id = 3;
-  string email_id = 4;
-  int32 cost_paise = 5;
-  string description = 6;
-  map<string, string> metadata = 7;
+enum MeterEventType {
+  EMAIL_ANALYZED    = 0;
+  SANDBOX_URL       = 1;
+  SANDBOX_FILE      = 2;
+  SANDBOX_DYNAMIC   = 3;
+  GEO_LOOKUP        = 4;
+  INTEL_ABUSEIPDB   = 5;
+  INTEL_VIRUSTOTAL  = 6;
+  INTEL_IPINFO      = 7;
+  INTEL_GREYNOISE   = 8;
+  INTEL_SHODAN      = 9;
+  REPORT_PDF        = 10;
+  REPORT_STIX       = 11;
+  API_CALL          = 12;
 }
 
-message RecordUsageResponse {
-  string usage_id = 1;
-  bool deduplicated = 2;
+message MeterEvent {
+  string         tenant_id        = 1;
+  string         user_id          = 2;
+  MeterEventType event_type       = 3;
+  string         idempotency_key  = 4;
+  string         email_id         = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  map<string, string> metadata    = 7;
 }
 
-message GetUsageSummaryRequest {
+message MeterBatch {
+  repeated MeterEvent events = 1;
+}
+
+message MeterAck {
+  uint32 accepted          = 1;
+  uint32 duplicate_skipped = 2;
+  string error             = 3;
+}
+
+message UsageRequest {
   string tenant_id = 1;
   google.protobuf.Timestamp period_start = 2;
-  google.protobuf.Timestamp period_end = 3;
+  google.protobuf.Timestamp period_end   = 3;
 }
 
-message GetUsageSummaryResponse {
-  string tenant_id = 1;
-  int64 total_cost_paise = 2;
-  int32 total_emails_analyzed = 3;
-  repeated UsageBreakdown breakdown = 4;
+message UsageSummary {
+  string tenant_id                  = 1;
+  google.protobuf.Timestamp period_start = 2;
+  google.protobuf.Timestamp period_end   = 3;
+  repeated UsageLine breakdown      = 4;
+  int64  total_paise                = 5;
 }
 
-message UsageBreakdown {
-  string event_type = 1;
-  int32 count = 2;
-  int64 total_cost_paise = 3;
+message UsageLine {
+  MeterEventType event_type       = 1;
+  uint64         count            = 2;
+  int64          unit_cost_paise  = 3;
+  int64          total_paise      = 4;
 }
 
-message GetInvoiceRequest {
-  string invoice_id = 1;
-  string tenant_id = 2;
+message QuotaRequest {
+  string         tenant_id  = 1;
+  MeterEventType event_type = 2;
 }
 
-message GetInvoiceResponse {
-  Invoice invoice = 1;
-}
-
-message ListInvoicesRequest {
-  string tenant_id = 1;
-  int32 limit = 2;
-  int32 offset = 3;
-}
-
-message ListInvoicesResponse {
-  repeated Invoice invoices = 1;
-  int32 total_count = 2;
-}
-
-message Invoice {
-  string invoice_id = 1;
-  string tenant_id = 2;
-  google.protobuf.Timestamp period_start = 3;
-  google.protobuf.Timestamp period_end = 4;
-  int64 total_cost_paise = 5;
-  string razorpay_payment_id = 6;
-  string status = 7;
-  google.protobuf.Timestamp created_at = 8;
+message QuotaResult {
+  bool  allowed   = 1;
+  int64 remaining = 2;
+  google.protobuf.Timestamp resets_at = 3;
 }

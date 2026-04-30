@@ -1,38 +1,59 @@
 syntax = "proto3";
+
 package deepmail.homograph;
 
-service HomographService {
-  rpc AnalyzeDomain(HomographAnalysisRequest) returns (HomographAnalysisResponse);
-  rpc BatchAnalyze(BatchHomographRequest) returns (BatchHomographResponse);
+service HomographAnalyzer {
+  rpc AnalyzeDomains (DomainBatchRequest)  returns (DomainBatchResult);
+  rpc ScoreDomain    (SingleDomainRequest) returns (DomainScore);
 }
 
-message HomographAnalysisRequest {
-  string domain = 1;
-  string email_id = 2;
-  string tenant_id = 3;
+enum HomographRisk {
+  RISK_NONE     = 0;
+  RISK_LOW      = 1;
+  RISK_MEDIUM   = 2;
+  RISK_HIGH     = 3;
+  RISK_CRITICAL = 4;
 }
 
-message HomographAnalysisResponse {
-  string domain = 1;
-  bool is_homograph = 2;
-  string punycode = 3;
-  string nfkc_normalized = 4;
-  repeated string unicode_scripts = 5;
-  bool mixed_scripts = 6;
-  string confusable_skeleton = 7;
-  string matched_brand = 8;
-  int32 levenshtein_distance = 9;
-  float confidence = 10;
-  string detail = 11;
-}
-
-message BatchHomographRequest {
-  string email_id = 1;
+message DomainBatchRequest {
+  string email_id  = 1;
   string tenant_id = 2;
-  repeated string domains = 3;
+  repeated string domains       = 3;
+  repeated string target_brands = 4;
 }
 
-message BatchHomographResponse {
-  repeated HomographAnalysisResponse results = 1;
-  int32 homographs_detected = 2;
+message DomainBatchResult {
+  string   email_id              = 1;
+  bool     homograph_detected    = 2;
+  string   highest_risk_domain   = 3;
+  float    max_similarity_score  = 4;
+  repeated DomainScore scores    = 5;
+}
+
+message SingleDomainRequest {
+  string domain                  = 1;
+  repeated string target_brands  = 2;
+}
+
+message DomainScore {
+  string        original_domain          = 1;
+  string        decoded_unicode          = 2;
+  string        normalized_ascii         = 3;
+  string        skeleton                 = 4;
+  bool          is_idn                   = 5;
+  string        dominant_script          = 6;
+  string        best_brand_match         = 7;
+  float         visual_similarity_score  = 8;
+  uint32        edit_distance            = 9;
+  bool          skeleton_match           = 10;
+  HomographRisk risk_level               = 11;
+  repeated SuspiciousCodepoint suspicious_codepoints = 12;
+}
+
+message SuspiciousCodepoint {
+  uint32 position         = 1;
+  uint32 codepoint        = 2;
+  string script           = 3;
+  string expected_script  = 4;
+  string confusable_with  = 5;
 }

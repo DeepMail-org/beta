@@ -1,76 +1,81 @@
 syntax = "proto3";
+
 package deepmail.header;
 
-service HeaderService {
-  rpc AnalyzeHeaders(HeaderAnalysisRequest) returns (HeaderAnalysisResponse);
+import "google/protobuf/timestamp.proto";
+
+service HeaderAnalyzer {
+  rpc AnalyzeHeaders (HeaderAnalysisRequest) returns (HeaderAnalysisResult);
+}
+
+enum SpfResult {
+  SPF_NONE      = 0;
+  SPF_PASS      = 1;
+  SPF_FAIL      = 2;
+  SPF_SOFTFAIL  = 3;
+  SPF_NEUTRAL   = 4;
+  SPF_PERMERROR = 5;
+  SPF_TEMPERROR = 6;
+}
+
+enum DkimResult {
+  DKIM_NONE      = 0;
+  DKIM_PASS      = 1;
+  DKIM_FAIL      = 2;
+  DKIM_POLICY    = 3;
+  DKIM_NEUTRAL   = 4;
+  DKIM_TEMPERROR = 5;
+  DKIM_PERMERROR = 6;
+}
+
+enum DmarcResult {
+  DMARC_NONE      = 0;
+  DMARC_PASS      = 1;
+  DMARC_FAIL      = 2;
+  DMARC_TEMPERROR = 3;
+  DMARC_PERMERROR = 4;
 }
 
 message HeaderAnalysisRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  repeated EmailHeader headers = 3;
-  string return_path = 4;
-  string from_address = 5;
-  string reply_to = 6;
-  string message_id = 7;
-  string x_mailer = 8;
-  string date_header = 9;
+  string email_id    = 1;
+  string tenant_id   = 2;
+  string raw_headers = 3;
+  google.protobuf.Timestamp received_at = 4;
 }
 
-message HeaderAnalysisResponse {
-  string email_id = 1;
-  SpfResult spf = 2;
-  DkimSummaryResult dkim = 3;
-  DmarcResult dmarc = 4;
-  bool return_path_mismatch = 5;
-  bool reply_to_mismatch = 6;
-  bool message_id_fake = 7;
-  XMailerInfo x_mailer_info = 8;
-  TimeAnomalyResult time_anomaly = 9;
-  float overall_header_score = 10;
-  string summary = 11;
+message HeaderAnalysisResult {
+  string      email_id                  = 1;
+  float       overall_risk_score        = 2;
+  SpfResult   spf_result                = 3;
+  string      spf_domain                = 4;
+  DkimResult  dkim_result               = 5;
+  string      dkim_domain               = 6;
+  DmarcResult dmarc_result              = 7;
+  string      dmarc_policy              = 8;
+  bool        return_path_mismatch      = 9;
+  bool        reply_to_mismatch         = 10;
+  bool        message_id_fake_pattern   = 11;
+  string      x_mailer                  = 12;
+  string      x_mailer_known_kit        = 13;
+  bool        sender_spoofing_likely    = 14;
+  repeated HeaderFinding findings       = 15;
+  TimeAnomalyResult time_anomaly        = 16;
 }
 
-message EmailHeader {
-  string name = 1;
-  string value = 2;
-}
-
-message SpfResult {
-  string result = 1; // pass, fail, softfail, neutral, none, temperror, permerror
-  string domain = 2;
-  string ip = 3;
-  string detail = 4;
-}
-
-message DkimSummaryResult {
-  string result = 1; // pass, fail, none
-  string domain = 2;
-  string selector = 3;
-  string detail = 4;
-}
-
-message DmarcResult {
-  string result = 1; // pass, fail, none
-  string policy = 2; // none, quarantine, reject
-  string domain = 3;
-  bool alignment_spf = 4;
-  bool alignment_dkim = 5;
-  string detail = 6;
-}
-
-message XMailerInfo {
-  string raw_value = 1;
-  string client_name = 2;
-  string client_version = 3;
-  bool is_suspicious = 4;
-  string detail = 5;
+message HeaderFinding {
+  string check_name  = 1;
+  string severity    = 2;
+  bool   passed      = 3;
+  string evidence    = 4;
+  string raw_value   = 5;
+  float  risk_weight = 6;
 }
 
 message TimeAnomalyResult {
-  bool anomaly_detected = 1;
-  int32 timezone_offset_minutes = 2;
-  int32 delay_from_expected_seconds = 3;
-  bool future_dated = 4;
-  string detail = 5;
+  bool  future_dated         = 1;
+  bool  date_predates_received = 2;
+  bool  suspicious_delay     = 3;
+  int32 max_hop_delay_sec    = 4;
+  int32 total_transit_sec    = 5;
+  int32 hop_count            = 6;
 }

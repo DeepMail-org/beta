@@ -1,38 +1,61 @@
 syntax = "proto3";
+
 package deepmail.dkim;
 
-service DkimService {
-  rpc AnalyzeDkim(DkimAnalysisRequest) returns (DkimAnalysisResponse);
+import "google/protobuf/timestamp.proto";
+
+service DkimAnalyzer {
+  rpc AnalyzeDkim      (DkimAnalysisRequest) returns (DkimAnalysisResult);
+  rpc CheckKeyRotation (KeyRotationRequest)  returns (KeyRotationResult);
+}
+
+enum DkimKeyStatus {
+  KEY_UNKNOWN   = 0;
+  KEY_VALID     = 1;
+  KEY_ROTATED   = 2;
+  KEY_REVOKED   = 3;
+  KEY_NOT_FOUND = 4;
 }
 
 message DkimAnalysisRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  repeated string dkim_headers = 3;
-  string raw_body = 4;
-  string from_domain = 5;
+  string email_id    = 1;
+  string tenant_id   = 2;
+  string raw_headers = 3;
+  string raw_body    = 4;
+  google.protobuf.Timestamp received_at = 5;
 }
 
-message DkimAnalysisResponse {
-  string email_id = 1;
-  repeated DkimResult results = 2;
-  bool replay_detected = 3;
-  float confidence_score = 4;
-  string summary = 5;
+message DkimAnalysisResult {
+  string   email_id          = 1;
+  bool     replay_detected   = 2;
+  float    replay_confidence = 3;
+  repeated string replay_reasons     = 4;
+  repeated DkimSignatureResult signatures = 5;
+  uint64   analysis_ms       = 6;
 }
 
-message DkimResult {
+message DkimSignatureResult {
+  string        selector                  = 1;
+  string        domain                    = 2;
+  string        algorithm                 = 3;
+  string        body_hash_claimed         = 4;
+  string        body_hash_computed        = 5;
+  bool          body_hash_match           = 6;
+  int64         header_delta_seconds      = 7;
+  int64         receive_delta_seconds     = 8;
+  DkimKeyStatus key_status                = 9;
+  bool          key_rotated_since_signing = 10;
+  bool          signature_valid           = 11;
+  google.protobuf.Timestamp timestamp_signed = 12;
+}
+
+message KeyRotationRequest {
   string selector = 1;
-  string domain = 2;
-  bool signature_valid = 3;
-  bool body_hash_valid = 4;
-  bool dns_key_found = 5;
-  bool key_rotated = 6;
-  bool replay_suspected = 7;
-  int64 signature_timestamp = 8;
-  int64 expiration_timestamp = 9;
-  string algorithm = 10;
-  string canonicalization = 11;
-  float confidence = 12;
-  string detail = 13;
+  string domain   = 2;
+  google.protobuf.Timestamp signing_timestamp = 3;
+}
+
+message KeyRotationResult {
+  bool   was_rotated     = 1;
+  string current_key_tag = 2;
 }

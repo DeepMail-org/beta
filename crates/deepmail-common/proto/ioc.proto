@@ -1,61 +1,74 @@
 syntax = "proto3";
+
 package deepmail.ioc;
 
-service IocService {
-  rpc ExtractIocs(IocExtractionRequest) returns (IocExtractionResponse);
-  rpc CorrelateIocs(IocCorrelationRequest) returns (IocCorrelationResponse);
+service IocExtractor {
+  rpc ExtractIocs  (IocExtractionRequest) returns (IocExtractionResult);
+  rpc GetEmailIocs (GetEmailIocsRequest)  returns (GetEmailIocsResult);
+}
+
+enum IocType {
+  IP            = 0;
+  URL           = 1;
+  DOMAIN        = 2;
+  EMAIL_ADDRESS = 3;
+  HASH_MD5      = 4;
+  HASH_SHA256   = 5;
+  HASH_SSDEEP   = 6;
+  FILENAME      = 7;
+  C2_SERVER     = 8;
+}
+
+enum IocSeverity {
+  INFO     = 0;
+  LOW      = 1;
+  MEDIUM   = 2;
+  HIGH     = 3;
+  CRITICAL = 4;
 }
 
 message IocExtractionRequest {
-  string email_id = 1;
+  string email_id    = 1;
+  string tenant_id   = 2;
+  string raw_headers = 3;
+  string body_plain  = 4;
+  string body_html   = 5;
+  repeated string attachment_hashes = 6;
+}
+
+message IocExtractionResult {
+  string   email_id     = 1;
+  repeated IocNode iocs = 2;
+  repeated IocRelation relations = 3;
+  bool     c2_detected  = 4;
+}
+
+message IocNode {
+  string      id              = 1;
+  IocType     ioc_type        = 2;
+  string      value           = 3;
+  float       confidence      = 4;
+  IocSeverity severity        = 5;
+  repeated string tags        = 6;
+  bool        is_c2           = 7;
+  string      c2_protocol     = 8;
+  string      location        = 9;
+  string      context_snippet = 10;
+}
+
+message IocRelation {
+  string source_id     = 1;
+  string target_id     = 2;
+  string relation_type = 3;
+  float  confidence    = 4;
+}
+
+message GetEmailIocsRequest {
+  string email_id  = 1;
   string tenant_id = 2;
-  string body_text = 3;
-  string body_html = 4;
-  repeated string header_values = 5;
 }
 
-message IocExtractionResponse {
-  string email_id = 1;
-  repeated Ioc iocs = 2;
-  repeated C2Heuristic c2_heuristics = 3;
-}
-
-message Ioc {
-  string ioc_id = 1;
-  string ioc_type = 2; // ip, url, domain, hash_sha256, hash_md5, email
-  string value = 3;
-  string context = 4; // where found: body, header, attachment_name, etc.
-  bool defanged = 5;
-  string original_value = 6;
-}
-
-message C2Heuristic {
-  string pattern = 1;
-  string matched_value = 2;
-  float confidence = 3;
-  string detail = 4;
-}
-
-message IocCorrelationRequest {
-  string tenant_id = 1;
-  repeated string ioc_values = 2;
-}
-
-message IocCorrelationResponse {
-  repeated IocCorrelation correlations = 1;
-  repeated CampaignCluster campaigns = 2;
-}
-
-message IocCorrelation {
-  string ioc_value = 1;
-  string ioc_type = 2;
-  repeated string related_email_ids = 3;
-  int32 occurrence_count = 4;
-}
-
-message CampaignCluster {
-  string cluster_id = 1;
-  repeated string email_ids = 2;
-  repeated string shared_iocs = 3;
-  float cluster_confidence = 4;
+message GetEmailIocsResult {
+  string   email_id     = 1;
+  repeated IocNode iocs = 2;
 }

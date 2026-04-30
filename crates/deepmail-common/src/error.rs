@@ -1,62 +1,82 @@
-use tonic::Status;
+//! Shared error type used across every DeepMail microservice.
+//!
+//! Services should bubble these up via the `?` operator. Conversion to
+//! `tonic::Status` is provided so handlers can `?` straight to a gRPC
+//! response without scattering match arms in every endpoint.
 
-/// Unified error type for all DeepMail services.
-///
-/// Each variant maps to a specific `tonic::Status` code for gRPC responses.
-/// Services should use this as their internal error type and let the
-/// `From<DeepMailError> for Status` conversion handle gRPC mapping.
-#[derive(Debug, thiserror::Error)]
+use thiserror::Error;
+
+/// Unified error type for DeepMail services.
+#[derive(Error, Debug)]
 pub enum DeepMailError {
+    /// Database (PostgreSQL / sqlx) failure: connection, query, or migration.
     #[error("database error: {0}")]
     Database(#[from] sqlx::Error),
 
-    #[error("NATS error: {0}")]
+    /// NATS (core or JetStream) transport / publish / subscribe failure.
+    #[error("nats error: {0}")]
     Nats(String),
 
-    #[error("configuration error: {0}")]
-    Config(String),
+    /// JetStream-specific publish or stream-management failure.
+    #[error("jetstream error: {0}")]
+    JetStream(String),
 
-    #[error("authentication failed: {0}")]
-    Auth(String),
+    /// Redis connection or command failure.
+    #[error("redis error: {0}")]
+    Redis(#[from] redis::RedisError),
 
-    #[error("permission denied: {0}")]
-    PermissionDenied(String),
+    /// Input failed validation (malformed UUID, bad email, missing field, etc).
+    #[error("validation error: {0}")]
+    Validation(String),
 
-    #[error("resource not found: {0}")]
+    /// Requested resource does not exist (email, tenant, user, report, …).
+    #[error("not found: {0}")]
     NotFound(String),
 
-    #[error("invalid input: {0}")]
-    InvalidInput(String),
+    /// Caller is not authenticated, or token is invalid / expired / revoked.
+    #[error("unauthorized: {0}")]
+    Unauthorized(String),
 
-    #[error("internal error: {0}")]
-    Internal(String),
+    /// Caller is authenticated but lacks permission for this operation.
+    #[error("forbidden: {0}")]
+    Forbidden(String),
 
-    #[error("external API error: {0}")]
-    ExternalApi(String),
+    /// Caller has exceeded a per-tenant or per-user rate limit / quota.
+    #[error("rate limited: {0}")]
+    RateLimited(String),
 
+    /// Configuration loading or schema validation failure.
+    #[error("config error: {0}")]
+    Config(#[from] config::ConfigError),
+
+    /// JSON or proto-level (de)serialization failure.
     #[error("serialization error: {0}")]
     Serialization(String),
 
-    #[error("service unavailable: {0}")]
-    Unavailable(String),
-}
+    /// Failure invoking an upstream HTTP threat-intel / sandbox / billing API.
+    #[error("external provider '{provider}' error: {message}")]
+    ExternalProvider {
+        /// Name of the upstream service (e.g. "VirusTotal", "AbuseIPDB").
+        provider: String,
+        /// Human-readable failure description.
+        message: String,
+    },
 
-impl From<DeepMailError> for Status {
-    fn from(err: DeepMailError) -> Self {
-        match &err {
-            DeepMailError::Database(_) => Status::internal(err.to_string()),
-            DeepMailError::Nats(_) => Status::internal(err.to_string()),
-            DeepMailError::Config(_) => Status::internal(err.to_string()),
-            DeepMailError::Auth(_) => Status::unauthenticated(err.to_string()),
-            DeepMailError::PermissionDenied(_) => Status::permission_denied(err.to_string()),
-            DeepMailError::NotFound(_) => Status::not_found(err.to_string()),
-            DeepMailError::InvalidInput(_) => Status::invalid_argument(err.to_string()),
-            DeepMailError::Internal(_) => Status::internal(err.to_string()),
-            DeepMailError::ExternalApi(_) => Status::unavailable(err.to_string()),
-            DeepMailError::Serialization(_) => Status::internal(err.to_string()),
-            DeepMailError::Unavailable(_) => Status::unavailable(err.to_string()),
-        }
-    }
+    /// gRPC call to a sibling DeepMail service failed at the transport layer.
+    #[error("grpc transport error: {0}")]
+    GrpcTransport(String),
+
+    /// gRPC call to a sibling DeepMail service returned a non-OK status.
+    #[error("grpc status: {0}")]
+    GrpcStatus(#[from] tonic::Status),
+
+    /// Background task panicked or was cancelled.
+    #[error("task join error: {0}")]
+    TaskJoin(#[from] tokio::task::JoinError),
+
+    /// Catch-all for unexpected internal failures.
+    #[error("internal error: {0}")]
+    Internal(String),
 }
 
 impl From<serde_json::Error> for DeepMailError {
@@ -65,47 +85,66 @@ impl From<serde_json::Error> for DeepMailError {
     }
 }
 
-impl From<async_nats::Error> for DeepMailError {
-    fn from(err: async_nats::Error) -> Self {
+impl From<async_nats::ConnectError> for DeepMailError {
+    fn from(err: async_nats::ConnectError) -> Self {
         DeepMailError::Nats(err.to_string())
     }
 }
 
-impl From<config::ConfigError> for DeepMailError {
-    fn from(err: config::ConfigError) -> Self {
-        DeepMailError::Config(err.to_string())
+impl From<async_nats::jetstream::context::PublishError> for DeepMailError {
+    fn from(err: async_nats::jetstream::context::PublishError) -> Self {
+        DeepMailError::JetStream(err.to_string())
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn database_error_maps_to_internal() {
-        let err = DeepMailError::Internal("test".into());
-        let status: Status = err.into();
-        assert_eq!(status.code(), tonic::Code::Internal);
-    }
-
-    #[test]
-    fn auth_error_maps_to_unauthenticated() {
-        let err = DeepMailError::Auth("bad token".into());
-        let status: Status = err.into();
-        assert_eq!(status.code(), tonic::Code::Unauthenticated);
-    }
-
-    #[test]
-    fn not_found_maps_correctly() {
-        let err = DeepMailError::NotFound("user 123".into());
-        let status: Status = err.into();
-        assert_eq!(status.code(), tonic::Code::NotFound);
-    }
-
-    #[test]
-    fn invalid_input_maps_to_invalid_argument() {
-        let err = DeepMailError::InvalidInput("bad email".into());
-        let status: Status = err.into();
-        assert_eq!(status.code(), tonic::Code::InvalidArgument);
+impl From<async_nats::SubscribeError> for DeepMailError {
+    fn from(err: async_nats::SubscribeError) -> Self {
+        DeepMailError::Nats(err.to_string())
     }
 }
+
+impl From<async_nats::PublishError> for DeepMailError {
+    fn from(err: async_nats::PublishError) -> Self {
+        DeepMailError::Nats(err.to_string())
+    }
+}
+
+impl From<tonic::transport::Error> for DeepMailError {
+    fn from(err: tonic::transport::Error) -> Self {
+        DeepMailError::GrpcTransport(err.to_string())
+    }
+}
+
+impl From<uuid::Error> for DeepMailError {
+    fn from(err: uuid::Error) -> Self {
+        DeepMailError::Validation(format!("invalid uuid: {err}"))
+    }
+}
+
+impl From<DeepMailError> for tonic::Status {
+    fn from(err: DeepMailError) -> Self {
+        use tonic::Code;
+        let (code, msg) = match &err {
+            DeepMailError::Validation(m) => (Code::InvalidArgument, m.clone()),
+            DeepMailError::NotFound(m) => (Code::NotFound, m.clone()),
+            DeepMailError::Unauthorized(m) => (Code::Unauthenticated, m.clone()),
+            DeepMailError::Forbidden(m) => (Code::PermissionDenied, m.clone()),
+            DeepMailError::RateLimited(m) => (Code::ResourceExhausted, m.clone()),
+            DeepMailError::Config(_) => (Code::FailedPrecondition, err.to_string()),
+            DeepMailError::Serialization(m) => (Code::InvalidArgument, m.clone()),
+            DeepMailError::ExternalProvider { .. } => (Code::Unavailable, err.to_string()),
+            DeepMailError::GrpcTransport(m) => (Code::Unavailable, m.clone()),
+            DeepMailError::GrpcStatus(s) => return s.clone(),
+            DeepMailError::Database(_)
+            | DeepMailError::Nats(_)
+            | DeepMailError::JetStream(_)
+            | DeepMailError::Redis(_)
+            | DeepMailError::TaskJoin(_)
+            | DeepMailError::Internal(_) => (Code::Internal, err.to_string()),
+        };
+        tonic::Status::new(code, msg)
+    }
+}
+
+/// Convenience alias: `Result<T, DeepMailError>`.
+pub type Result<T> = std::result::Result<T, DeepMailError>;

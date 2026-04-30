@@ -1,67 +1,57 @@
 syntax = "proto3";
+
 package deepmail.scoring;
 
+import "google/protobuf/timestamp.proto";
+
 service ScoringService {
-  rpc CalculateScore(ScoreRequest) returns (ScoreResponse);
-  rpc SubmitFeedback(FeedbackRequest) returns (FeedbackResponse);
+  rpc GetScore       (GetScoreRequest)  returns (ThreatScore);
+  rpc SubmitFeedback (FeedbackRequest)  returns (FeedbackResponse);
 }
 
-message ScoreRequest {
+enum Severity {
+  CLEAN    = 0;
+  LOW      = 1;
+  MEDIUM   = 2;
+  HIGH     = 3;
+  CRITICAL = 4;
+}
+
+message GetScoreRequest {
   string email_id = 1;
-  string tenant_id = 2;
-  SignalBundle signals = 3;
 }
 
-message ScoreResponse {
-  string email_id = 1;
-  int32 final_score = 2; // 0-100
-  string severity = 3; // clean, low, medium, high, critical
-  repeated SignalContribution contributions = 4;
-  float ml_augmentation = 5;
-  string summary = 6;
+message ThreatScore {
+  string   email_id          = 1;
+  float    final_score       = 2;
+  Severity severity          = 3;
+  float    confidence        = 4;
+  repeated ScoreSignal signals = 5;
+  float    ml_score          = 6;
+  string   ml_model_version  = 7;
+  google.protobuf.Timestamp scored_at = 8;
 }
 
-message SignalBundle {
-  float header_score = 1;
-  float dkim_score = 2;
-  float spf_score = 3;
-  float dmarc_score = 4;
-  float geo_anomaly_score = 5;
-  float ip_reputation_score = 6;
-  float intel_aggregate_score = 7;
-  float ioc_score = 8;
-  float homograph_score = 9;
-  float body_url_score = 10;
-  float sandbox_url_score = 11;
-  float sandbox_file_score = 12;
-  float sandbox_dynamic_score = 13;
-  float phishing_ml_score = 14;
-  float attachment_ml_score = 15;
-  float sender_anomaly_score = 16;
-  float hash_reputation_score = 17;
-  bool hash_known_malicious = 18;
-  int32 total_iocs_found = 19;
-  int32 total_urls_found = 20;
-  bool has_macros = 21;
-  int32 mitre_techniques_count = 22;
-}
-
-message SignalContribution {
-  string signal_name = 1;
-  float raw_score = 2;
-  float weight = 3;
-  float weighted_score = 4;
+message ScoreSignal {
+  string signal_name    = 1;
+  string signal_source  = 2;
+  float  value          = 3;
+  float  weight         = 4;
+  float  contribution   = 5;
+  string evidence       = 6;
 }
 
 message FeedbackRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  string analyst_id = 3;
-  string verdict = 4; // true_positive, false_positive, true_negative, false_negative
-  string notes = 5;
+  string   email_id            = 1;
+  string   analyst_user_id     = 2;
+  Severity original_severity   = 3;
+  Severity corrected_severity  = 4;
+  float    original_score      = 5;
+  float    corrected_score     = 6;
+  string   notes               = 7;
 }
 
 message FeedbackResponse {
-  bool success = 1;
-  string feedback_id = 2;
+  bool   accepted     = 1;
+  string feedback_id  = 2;
 }

@@ -1,56 +1,78 @@
 syntax = "proto3";
+
 package deepmail.geo;
 
-service GeoService {
-  rpc LookupIp(GeoLookupRequest) returns (GeoLookupResponse);
-  rpc AnalyzeHopChain(HopChainRequest) returns (HopChainResponse);
+service GeoIntel {
+  rpc ResolveIP       (IpRequest)       returns (GeoEnrichment);
+  rpc ResolveHopChain (HopChainRequest) returns (HopChainResponse);
+  rpc GetEmailGeo     (EmailGeoRequest) returns (EmailGeoResult);
 }
 
-message GeoLookupRequest {
+message IpRequest {
   string ip_address = 1;
 }
 
-message GeoLookupResponse {
-  string ip_address = 1;
-  string country_code = 2;
-  string country_name = 3;
-  string city = 4;
-  string region = 5;
-  double latitude = 6;
-  double longitude = 7;
-  int32 asn = 8;
-  string asn_org = 9;
-  string isp = 10;
-  bool is_hosting = 11;
-  bool is_residential = 12;
-  string timezone = 13;
+message GeoEnrichment {
+  string ip_address          = 1;
+  string country_code        = 2;
+  string country_name        = 3;
+  string region_name         = 4;
+  string city                = 5;
+  string postal_code         = 6;
+  double latitude            = 7;
+  double longitude           = 8;
+  int32  accuracy_radius_km  = 9;
+  string timezone            = 10;
+  int32  asn_number          = 11;
+  string asn_org             = 12;
+  string isp                 = 13;
+  string connection_type     = 14;
+  bool   is_hosting          = 15;
+  bool   is_residential      = 16;
+  bool   is_datacenter       = 17;
+  string reverse_dns         = 18;
+  bool   ptr_match           = 19;
+  float  confidence_score    = 20;
 }
 
 message HopChainRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  repeated ReceivedHop hops = 3;
+  string email_id              = 1;
+  string tenant_id             = 2;
+  repeated string hop_ips      = 3;
 }
 
 message HopChainResponse {
+  repeated HopGeoDetail hops      = 1;
+  float    anomaly_score          = 2;
+  bool     routing_anomaly        = 3;
+  repeated string anomaly_reasons = 4;
+}
+
+message HopGeoDetail {
+  int32         hop_index      = 1;
+  string        ip_address     = 2;
+  GeoEnrichment geo            = 3;
+  bool          anomaly_flag   = 4;
+  string        anomaly_reason = 5;
+}
+
+message EmailGeoRequest {
   string email_id = 1;
-  repeated GeoHop geo_hops = 2;
-  float geo_anomaly_score = 3;
-  string anomaly_detail = 4;
 }
 
-message ReceivedHop {
-  int32 hop_number = 1;
-  string from_ip = 2;
-  string by_host = 3;
-  int64 timestamp_unix = 4;
-  int32 delay_seconds = 5;
+message EmailGeoResult {
+  string   email_id              = 1;
+  repeated HopGeoDetail hops     = 2;
+  string   true_sender_country   = 3;
+  float    geo_anomaly_score     = 4;
+  repeated GeoPoint map_points   = 5;
 }
 
-message GeoHop {
-  int32 hop_number = 1;
-  string ip_address = 2;
-  GeoLookupResponse geo = 3;
-  int32 delay_seconds = 4;
-  double distance_km = 5;
+message GeoPoint {
+  string ip       = 1;
+  double lat      = 2;
+  double lon      = 3;
+  string label    = 4;
+  string country  = 5;
+  string asn_org  = 6;
 }

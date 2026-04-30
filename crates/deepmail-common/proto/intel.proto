@@ -1,75 +1,59 @@
 syntax = "proto3";
+
 package deepmail.intel;
 
-service IntelService {
-  rpc LookupIp(IntelIpRequest) returns (IntelIpResponse);
-  rpc LookupDomain(IntelDomainRequest) returns (IntelDomainResponse);
-  rpc LookupHash(IntelHashRequest) returns (IntelHashResponse);
-  rpc LookupUrl(IntelUrlRequest) returns (IntelUrlResponse);
+import "google/protobuf/timestamp.proto";
+
+service ThreatIntel {
+  rpc EnrichIndicator (EnrichRequest)      returns (EnrichResult);
+  rpc EnrichBatch     (EnrichBatchRequest) returns (EnrichBatchResult);
 }
 
-message IntelIpRequest {
-  string ip_address = 1;
-  string email_id = 2;
-  string tenant_id = 3;
-  repeated string providers = 4; // empty = all available
+enum IndicatorType {
+  IP          = 0;
+  URL         = 1;
+  DOMAIN      = 2;
+  HASH_MD5    = 3;
+  HASH_SHA256 = 4;
 }
 
-message IntelIpResponse {
-  string ip_address = 1;
-  repeated ProviderResult results = 2;
-  float aggregate_risk_score = 3;
+enum IntelVerdict {
+  VERDICT_UNKNOWN = 0;
+  CLEAN           = 1;
+  SUSPICIOUS      = 2;
+  MALICIOUS       = 3;
 }
 
-message IntelDomainRequest {
-  string domain = 1;
-  string email_id = 2;
-  string tenant_id = 3;
-  repeated string providers = 4;
+message EnrichRequest {
+  string        indicator       = 1;
+  IndicatorType indicator_type  = 2;
 }
 
-message IntelDomainResponse {
-  string domain = 1;
-  repeated ProviderResult results = 2;
-  float aggregate_risk_score = 3;
-}
-
-message IntelHashRequest {
-  string hash = 1;
-  string hash_type = 2; // sha256, md5
-  string email_id = 3;
-  string tenant_id = 4;
-  repeated string providers = 5;
-}
-
-message IntelHashResponse {
-  string hash = 1;
-  repeated ProviderResult results = 2;
-  float aggregate_risk_score = 3;
-}
-
-message IntelUrlRequest {
-  string url = 1;
-  string email_id = 2;
-  string tenant_id = 3;
-  repeated string providers = 4;
-}
-
-message IntelUrlResponse {
-  string url = 1;
-  repeated ProviderResult results = 2;
-  float aggregate_risk_score = 3;
+message EnrichResult {
+  string        indicator                       = 1;
+  IndicatorType indicator_type                  = 2;
+  IntelVerdict  aggregated_verdict              = 3;
+  float         max_confidence                  = 4;
+  map<string, ProviderResult> provider_verdicts = 5;
+  bool          from_cache                      = 6;
+  google.protobuf.Timestamp expires_at          = 7;
 }
 
 message ProviderResult {
-  string provider = 1; // abuseipdb, virustotal, ipinfo, greynoise, shodan
-  bool available = 2;
-  float risk_score = 3;
-  string raw_response = 4; // JSON string
-  int32 detections = 5;
-  int32 total_engines = 6;
-  repeated string tags = 7;
-  string detail = 8;
-  bool from_cache = 9;
-  int64 cache_ttl_remaining = 10;
+  bool   malicious        = 1;
+  bool   suspicious       = 2;
+  float  confidence       = 3;
+  int32  detection_count  = 4;
+  int32  total_engines    = 5;
+  repeated string categories = 6;
+  repeated string tags       = 7;
+  string raw_verdict      = 8;
+}
+
+message EnrichBatchRequest {
+  repeated EnrichRequest requests = 1;
+}
+
+message EnrichBatchResult {
+  repeated EnrichResult results = 1;
 }

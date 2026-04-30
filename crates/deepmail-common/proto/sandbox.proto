@@ -1,172 +1,100 @@
 syntax = "proto3";
+
 package deepmail.sandbox;
 
-service SandboxUrlService {
-  rpc AnalyzeUrl(UrlSandboxRequest) returns (UrlSandboxResponse);
+import "google/protobuf/timestamp.proto";
+
+service SandboxService {
+  rpc SubmitUrl        (UrlSubmitRequest)  returns (SandboxJobAck);
+  rpc SubmitFile       (FileSubmitRequest) returns (SandboxJobAck);
+  rpc GetUrlReport     (GetReportRequest)  returns (UrlSandboxReport);
+  rpc GetFileReport    (GetReportRequest)  returns (FileSandboxReport);
+  rpc GetDynamicReport (GetReportRequest)  returns (DynamicSandboxReport);
 }
 
-service SandboxFileService {
-  rpc AnalyzeFile(FileSandboxRequest) returns (FileSandboxResponse);
+enum SandboxVerdict {
+  CLEAN      = 0;
+  SUSPICIOUS = 1;
+  MALICIOUS  = 2;
+  ERROR      = 3;
+  UNKNOWN    = 4;
 }
 
-service SandboxDynamicService {
-  rpc AnalyzeFile(DynamicSandboxRequest) returns (DynamicSandboxResponse);
+enum JobStatus {
+  QUEUED    = 0;
+  RUNNING   = 1;
+  COMPLETED = 2;
+  FAILED    = 3;
+  TIMEOUT   = 4;
 }
 
-// ── URL Sandbox (Playwright/gVisor) ──
-
-message UrlSandboxRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  string url = 3;
-  int32 timeout_seconds = 4;
+message UrlSubmitRequest {
+  string email_id          = 1;
+  string tenant_id         = 2;
+  string url               = 3;
+  string extracted_url_id  = 4;
 }
 
-message UrlSandboxResponse {
-  string email_id = 1;
-  string url = 2;
-  string final_url = 3;
-  int32 redirect_count = 4;
-  repeated string redirect_chain = 5;
-  string dom_snapshot_s3_key = 6;
-  string screenshot_s3_key = 7;
-  repeated NetworkRequest network_requests = 8;
-  repeated CookieHarvest cookies = 9;
-  repeated string js_redirects = 10;
-  float risk_score = 11;
-  repeated string findings = 12;
+message FileSubmitRequest {
+  string email_id      = 1;
+  string tenant_id     = 2;
+  string attachment_id = 3;
+  string sha256        = 4;
+  string s3_key        = 5;
+  string content_type  = 6;
 }
 
-message NetworkRequest {
-  string method = 1;
-  string url = 2;
-  int32 status_code = 3;
-  string content_type = 4;
-  int64 size_bytes = 5;
-  bool is_third_party = 6;
+message SandboxJobAck {
+  string    job_id = 1;
+  JobStatus status = 2;
 }
 
-message CookieHarvest {
-  string name = 1;
-  string domain = 2;
-  string path = 3;
-  bool secure = 4;
-  bool http_only = 5;
-  string same_site = 6;
+message GetReportRequest {
+  string job_id = 1;
 }
 
-// ── File Sandbox (static analysis) ──
-
-message FileSandboxRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  string s3_key = 3;
-  string filename = 4;
-  string file_type = 5;
-  string sha256 = 6;
+message UrlSandboxReport {
+  string         job_id              = 1;
+  string         email_id            = 2;
+  SandboxVerdict verdict             = 3;
+  string         final_url           = 4;
+  int32          redirect_count      = 5;
+  string         page_title          = 6;
+  string         screenshot_s3_key   = 7;
+  repeated string network_requests   = 8;
+  repeated string dns_queries        = 9;
+  repeated string downloaded_files   = 10;
+  float          risk_score          = 11;
+  google.protobuf.Timestamp completed_at = 12;
 }
 
-message FileSandboxResponse {
-  string email_id = 1;
-  string sha256 = 2;
-  float risk_score = 3;
-  bool has_macros = 4;
-  repeated string yara_matches = 5;
-  repeated string ole_streams = 6;
-  float entropy = 7;
-  string imphash = 8;
-  repeated ExifTag exif_tags = 9;
+message FileSandboxReport {
+  string         job_id              = 1;
+  string         email_id            = 2;
+  SandboxVerdict verdict             = 3;
+  string         file_type           = 4;
+  float          entropy             = 5;
+  bool           high_entropy        = 6;
+  bool           has_macros          = 7;
+  bool           pdf_javascript      = 8;
+  repeated string yara_matches       = 9;
   repeated string suspicious_strings = 10;
-  repeated string findings = 11;
+  string         imphash             = 11;
+  float          risk_score          = 12;
+  google.protobuf.Timestamp completed_at = 13;
 }
 
-message ExifTag {
-  string tag = 1;
-  string value = 2;
-}
-
-// ── Dynamic Sandbox (CAPEv2/Firecracker) ──
-
-message DynamicSandboxRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  string s3_key = 3;
-  string filename = 4;
-  string sha256 = 5;
-  int32 timeout_seconds = 6;
-}
-
-message DynamicSandboxResponse {
-  string email_id = 1;
-  string sha256 = 2;
-  float risk_score = 3;
-  repeated SyscallTrace syscalls = 4;
-  repeated NetworkCall network_calls = 5;
-  repeated DroppedFile dropped_files = 6;
-  repeated RegistryEdit registry_edits = 7;
-  repeated ProcessInjection injections = 8;
-  repeated PersistenceMechanism persistence = 9;
-  repeated MitreMapping mitre_mappings = 10;
-  C2Config c2_config = 11;
-  repeated string findings = 12;
-}
-
-message SyscallTrace {
-  string syscall_name = 1;
-  repeated string arguments = 2;
-  int64 timestamp_ns = 3;
-  int32 pid = 4;
-}
-
-message NetworkCall {
-  string protocol = 1;
-  string destination_ip = 2;
-  int32 destination_port = 3;
-  string domain = 4;
-  int64 bytes_sent = 5;
-  int64 bytes_received = 6;
-}
-
-message DroppedFile {
-  string path = 1;
-  string sha256 = 2;
-  int64 size_bytes = 3;
-  string file_type = 4;
-}
-
-message RegistryEdit {
-  string key = 1;
-  string value_name = 2;
-  string value_data = 3;
-  string operation = 4; // create, modify, delete
-}
-
-message ProcessInjection {
-  string technique = 1;
-  int32 source_pid = 2;
-  int32 target_pid = 3;
-  string target_process = 4;
-}
-
-message PersistenceMechanism {
-  string technique = 1;
-  string location = 2;
-  string detail = 3;
-}
-
-message MitreMapping {
-  string tactic = 1;
-  string technique_id = 2;
-  string technique_name = 3;
-  string subtechnique = 4;
-  string evidence = 5;
-}
-
-message C2Config {
-  bool detected = 1;
-  string protocol = 2;
-  repeated string c2_servers = 3;
-  int32 beacon_interval_ms = 4;
-  string encryption = 5;
-  string raw_config = 6;
+message DynamicSandboxReport {
+  string         job_id              = 1;
+  string         email_id            = 2;
+  SandboxVerdict verdict             = 3;
+  string         malware_family      = 4;
+  repeated string c2_servers         = 5;
+  bool           process_injection   = 6;
+  bool           persistence_attempt = 7;
+  int32          syscall_count       = 8;
+  repeated string mitre_techniques   = 9;
+  string         cape_report_s3_key  = 10;
+  float          risk_score          = 11;
+  google.protobuf.Timestamp completed_at = 12;
 }

@@ -1,85 +1,71 @@
 syntax = "proto3";
+
 package deepmail.ml;
 
+import "google/protobuf/timestamp.proto";
+
 service MlService {
-  rpc ClassifyPhishing(PhishingRequest) returns (PhishingResponse);
-  rpc ClassifyAttachment(AttachmentClassifyRequest) returns (AttachmentClassifyResponse);
-  rpc DetectSenderAnomaly(SenderAnomalyRequest) returns (SenderAnomalyResponse);
-  rpc ClusterCampaign(CampaignClusterRequest) returns (CampaignClusterResponse);
-  rpc AugmentScore(ScoreAugmentRequest) returns (ScoreAugmentResponse);
+  rpc ClassifyPhishing   (PhishingRequest)    returns (PhishingResult);
+  rpc ClassifyAttachment (AttachmentRequest)  returns (AttachmentResult);
+  rpc DetectAnomaly      (AnomalyRequest)     returns (AnomalyResult);
+  rpc GetEmbedding       (EmbeddingRequest)   returns (EmbeddingResult);
 }
 
 message PhishingRequest {
+  string email_id      = 1;
+  string subject       = 2;
+  string body_plain    = 3;
+  string from_address  = 4;
+}
+
+message PhishingResult {
+  string   email_id              = 1;
+  float    phishing_probability  = 2;
+  string   label                 = 3;
+  float    confidence            = 4;
+  string   model_version         = 5;
+  repeated string triggered_features = 6;
+}
+
+message AttachmentRequest {
+  string   attachment_id      = 1;
+  float    entropy            = 2;
+  repeated string suspicious_strings = 3;
+  bool     has_macros         = 4;
+  string   file_type          = 5;
+  string   imphash            = 6;
+}
+
+message AttachmentResult {
+  string attachment_id        = 1;
+  float  malicious_probability = 2;
+  string label                = 3;
+  float  confidence           = 4;
+}
+
+message AnomalyRequest {
+  string email_id      = 1;
+  string from_address  = 2;
+  string from_domain   = 3;
+  string tenant_id     = 4;
+  google.protobuf.Timestamp send_time = 5;
+  map<string, float> features = 6;
+}
+
+message AnomalyResult {
+  string   email_id        = 1;
+  bool     is_anomalous    = 2;
+  float    anomaly_score   = 3;
+  repeated string anomaly_reasons = 4;
+}
+
+message EmbeddingRequest {
   string email_id = 1;
-  string tenant_id = 2;
-  string subject = 3;
-  string body_text = 4;
-  string from_address = 5;
+  string text     = 2;
 }
 
-message PhishingResponse {
-  string email_id = 1;
-  float phishing_probability = 2;
-  string classification = 3; // phishing, suspicious, legitimate
-  repeated string indicators = 4;
-}
-
-message AttachmentClassifyRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  string filename = 3;
-  string file_type = 4;
-  int64 file_size = 5;
-  float entropy = 6;
-  bool has_macros = 7;
-  repeated string yara_matches = 8;
-}
-
-message AttachmentClassifyResponse {
-  float malware_probability = 1;
-  string classification = 2; // malicious, suspicious, benign
-  repeated string features_used = 3;
-}
-
-message SenderAnomalyRequest {
-  string tenant_id = 1;
-  string from_address = 2;
-  string from_domain = 3;
-  string sending_ip = 4;
-  string x_mailer = 5;
-  int64 send_timestamp = 6;
-}
-
-message SenderAnomalyResponse {
-  float anomaly_score = 1;
-  bool is_anomalous = 2;
-  repeated string anomaly_factors = 3;
-}
-
-message CampaignClusterRequest {
-  string tenant_id = 1;
-  string email_id = 2;
-  string subject = 3;
-  string body_text = 4;
-  repeated string iocs = 5;
-}
-
-message CampaignClusterResponse {
-  string cluster_id = 1;
-  float similarity_score = 2;
-  int32 cluster_size = 3;
-  repeated string related_email_ids = 4;
-}
-
-message ScoreAugmentRequest {
-  string email_id = 1;
-  string tenant_id = 2;
-  float current_score = 3;
-  map<string, float> signal_scores = 4;
-}
-
-message ScoreAugmentResponse {
-  float augmented_score = 1;
-  float adjustment = 2;
-  string reasoning = 3;
+message EmbeddingResult {
+  string   email_id      = 1;
+  repeated float vector  = 2;
+  string   model_version = 3;
 }

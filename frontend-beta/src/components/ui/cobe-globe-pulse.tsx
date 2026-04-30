@@ -13,6 +13,16 @@ interface GlobePulseProps {
 	markers?: PulseMarker[];
 	className?: string;
 	speed?: number;
+	/** RGB triplet 0..1 for the dot colour of land */
+	baseColor?: [number, number, number];
+	/** RGB triplet 0..1 for the marker colour */
+	markerColor?: [number, number, number];
+	/** RGB triplet 0..1 for the rim glow */
+	glowColor?: [number, number, number];
+	/** Brightness multiplier for the dotted map (1..15). Higher = more vivid */
+	mapBrightness?: number;
+	/** Whether the user can rotate the globe with their pointer (default true) */
+	interactive?: boolean;
 }
 
 const defaultMarkers: PulseMarker[] = [
@@ -26,6 +36,11 @@ export function GlobePulse({
 	markers = defaultMarkers,
 	className = "",
 	speed = 0.003,
+	baseColor = [0.18, 0.42, 0.95],
+	markerColor = [0.45, 0.78, 1.0],
+	glowColor = [0.18, 0.42, 0.95],
+	mapBrightness = 12,
+	interactive = true,
 }: GlobePulseProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const pointerInteracting = useRef<{ x: number; y: number } | null>(null);
@@ -86,15 +101,15 @@ export function GlobePulse({
 				phi: 0,
 				theta: 0.2,
 				dark: 1,
-				diffuse: 1.5,
+				diffuse: 1.4,
 				mapSamples: 16000,
-				mapBrightness: 10,
-				baseColor: [0.5, 0.5, 0.5],
-				markerColor: [0.2, 0.8, 0.9],
-				glowColor: [0.05, 0.05, 0.05],
+				mapBrightness,
+				baseColor,
+				markerColor,
+				glowColor,
 				markers: markers.map((m) => ({
 					location: m.location,
-					size: 0.025,
+					size: 0.03,
 				})),
 			} as Parameters<typeof createGlobe>[1]);
 
@@ -138,15 +153,16 @@ export function GlobePulse({
 			`}</style>
 			<canvas
 				ref={canvasRef}
-				onPointerDown={handlePointerDown}
+				onPointerDown={interactive ? handlePointerDown : undefined}
 				style={{
 					width: "100%",
 					height: "100%",
-					cursor: "grab",
+					cursor: interactive ? "grab" : "default",
 					opacity: 0,
 					transition: "opacity 1.2s ease",
 					borderRadius: "50%",
 					touchAction: "none",
+					pointerEvents: interactive ? "auto" : "none",
 				}}
 			/>
 		</div>

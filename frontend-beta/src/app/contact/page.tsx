@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Mail, Phone, ArrowUpRight, Send, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { LottieBookCallButton } from "@/components/ui/lottie-book-call-button";
 
 const CONTACT_EMAIL = "contact@deepmail.ai";
 const CONTACT_PHONE = "+91 1234567890";
@@ -179,6 +178,25 @@ export default function ContactPage() {
 								— page our SOC line.
 							</p>
 						</div>
+
+						{/* Book a call CTA */}
+						<div className="flex flex-col gap-3 rounded-2xl border border-white/6 bg-white/1.5 p-5">
+							<p className="text-xs uppercase tracking-wider text-white/35 font-medium">
+								Prefer a call?
+							</p>
+							<p className="text-sm text-white/55 leading-relaxed">
+								Schedule a 30-minute intro call with our team directly.
+							</p>
+							<a
+								href="https://cal.com"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex h-10 w-fit items-center gap-2 rounded-full border border-white/15 bg-white/4 px-5 text-sm font-medium text-white/80 transition-all duration-200 hover:border-white/30 hover:bg-white/8 hover:text-white"
+							>
+								Book a call
+								<ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+							</a>
+						</div>
 					</motion.aside>
 
 					{/* RIGHT — form */}
@@ -279,12 +297,26 @@ export default function ContactPage() {
 										<p className="text-xs text-white/30">
 											By submitting, you agree to our terms.
 										</p>
-										<LottieBookCallButton
+										<button
 											type="submit"
-											label="Book a call"
-											loading={sending}
-											loadingLabel="Sending…"
-										/>
+											disabled={sending}
+											className="inline-flex h-11 items-center gap-2.5 rounded-full border border-white/20 bg-white/6 px-6 text-sm font-medium text-white transition-all duration-200 hover:border-white/35 hover:bg-white/10 hover:shadow-[0_0_24px_rgba(255,255,255,0.12)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+										>
+											{sending ? (
+												<>
+													<svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+														<circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="3" />
+														<path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+													</svg>
+													Sending…
+												</>
+											) : (
+												<>
+													<Send className="h-4 w-4" strokeWidth={1.5} />
+													Send message
+												</>
+											)}
+										</button>
 									</div>
 								</form>
 							</div>

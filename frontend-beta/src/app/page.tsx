@@ -1,30 +1,84 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
+import dynamic from "next/dynamic";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { LandingHero } from "@/components/LandingHero";
-import { LandingStats } from "@/components/LandingStats";
-import { CinematicFooter } from "@/components/ui/motion-footer";
-import { UploadModal } from "@/components/LandingModals";
 import { useToast, ToastContainer } from "@/components/LandingModals";
-import HoverBrandLogo from "@/components/ui/hover-brand-logo";
-import FAQWithSpiral from "@/components/ui/faq-section";
-import { EtheralShadow } from "@/components/ui/etheral-shadow";
-import FeaturesSectionDemo2 from "@/components/features-section-demo-2";
-import FeaturesSectionDemo3 from "@/components/features-section-demo-3";
-import BentoGridThirdDemo from "@/components/bento-grid-demo-3";
-import { FeaturesAndBenefits } from "@/components/features-and-benefits";
 
-function PageSpotlight() {
+// Heavy below-the-fold sections — lazy-loaded on scroll. Each is rendered inside
+// a FadeIn so loading happens just before it enters the viewport.
+const LandingStats = dynamic(
+	() => import("@/components/LandingStats").then((m) => m.LandingStats),
+	{ loading: () => <SectionSkeleton h="h-72" />, ssr: false },
+);
+const HoverBrandLogo = dynamic(
+	() => import("@/components/ui/hover-brand-logo"),
+	{ loading: () => <SectionSkeleton h="h-64" />, ssr: false },
+);
+const FeaturesSectionDemo2 = dynamic(
+	() => import("@/components/features"),
+	{ loading: () => <SectionSkeleton h="h-[640px]" />, ssr: false },
+);
+const FeaturesSectionDemo3 = dynamic(
+	() => import("@/components/features_section"),
+	{ loading: () => <SectionSkeleton h="h-[720px]" />, ssr: false },
+);
+const BentoGridThirdDemo = dynamic(
+	() => import("@/components/bento-grid"),
+	{ loading: () => <SectionSkeleton h="h-[720px]" />, ssr: false },
+);
+const FeaturesAndBenefits = dynamic(
+	() => import("@/components/features-and-benefits").then((m) => m.FeaturesAndBenefits),
+	{ loading: () => <SectionSkeleton h="h-[480px]" />, ssr: false },
+);
+const PerspectiveMarquee = dynamic(
+	() => import("@/components/ui/remocn-perspective-marquee").then((m) => m.PerspectiveMarquee),
+	{ loading: () => <SectionSkeleton h="h-36" />, ssr: false },
+);
+const CallToAction = dynamic(
+	() => import("@/components/ui/cta-3").then((m) => m.CallToAction),
+	{ loading: () => <SectionSkeleton h="h-48" />, ssr: false },
+);
+const FAQWithSpiral = dynamic(
+	() => import("@/components/ui/faq-section"),
+	{ loading: () => <SectionSkeleton h="h-[640px]" />, ssr: false },
+);
+const CinematicFooter = dynamic(
+	() => import("@/components/ui/motion-footer").then((m) => m.CinematicFooter),
+	{ loading: () => null, ssr: false },
+);
+const UploadModal = dynamic(
+	() => import("@/components/LandingModals").then((m) => m.UploadModal),
+	{ ssr: false },
+);
+
+function SectionSkeleton({ h = "h-96" }: { h?: string }) {
+	return (
+		<div className={`w-full ${h} animate-pulse bg-white/1.5`} aria-hidden />
+	);
+}
+
+const PageSpotlight = memo(function PageSpotlight() {
 	const [pos, setPos] = useState({ x: -400, y: -400 });
 	const [active, setActive] = useState(false);
 
 	useEffect(() => {
+		let raf = 0;
+		let pending: { x: number; y: number } | null = null;
 		const onMove = (e: MouseEvent) => {
-			setPos({ x: e.clientX, y: e.clientY });
-			if (!active) setActive(true);
+			pending = { x: e.clientX, y: e.clientY };
+			if (raf) return;
+			raf = requestAnimationFrame(() => {
+				if (pending) setPos(pending);
+				if (!active) setActive(true);
+				raf = 0;
+			});
 		};
 		window.addEventListener("mousemove", onMove, { passive: true });
-		return () => window.removeEventListener("mousemove", onMove);
+		return () => {
+			window.removeEventListener("mousemove", onMove);
+			if (raf) cancelAnimationFrame(raf);
+		};
 	}, [active]);
 
 	return (
@@ -36,24 +90,25 @@ function PageSpotlight() {
 			}}
 		/>
 	);
-}
+});
 
 function FadeIn({ children }: { children: React.ReactNode }) {
 	const [isVisible, setIsVisible] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		const node = ref.current;
+		if (!node) return;
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting) {
 					setIsVisible(true);
-					if (ref.current) observer.unobserve(ref.current);
+					observer.unobserve(node);
 				}
 			},
-			{ threshold: 0.1 },
+			{ threshold: 0.1, rootMargin: "200px 0px" },
 		);
-
-		if (ref.current) observer.observe(ref.current);
+		observer.observe(node);
 		return () => observer.disconnect();
 	}, []);
 
@@ -84,41 +139,31 @@ export default function DeepMailLandingPage() {
 				</FadeIn>
 
 				<FadeIn>
-					<section className="relative h-120 w-full overflow-hidden border-y border-white/5 md:h-140">
-						<EtheralShadow
-							color="rgba(255, 255, 255, 0.55)"
-							animation={{ scale: 100, speed: 90 }}
-							noise={{ opacity: 0.6, scale: 1.2 }}
-							sizing="fill"
-						>
-							<div className="flex flex-col items-center gap-5 px-6 text-center">
-								<span className="rounded-full border border-white/15 bg-black/40 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65 backdrop-blur-sm">
-									Threat intelligence
-								</span>
-								<h2 className="font-display text-5xl font-semibold tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)] md:text-7xl lg:text-8xl">
-									Shadows,
-									<br />
-									surfaced.
-								</h2>
-								<p className="max-w-md text-sm leading-relaxed text-white/65 md:text-base">
-									Every campaign leaves a trace. DeepMail finds it before your inbox does.
-								</p>
-							</div>
-						</EtheralShadow>
-					</section>
-				</FadeIn>
-
-				<FadeIn>
 					<LandingStats />
 				</FadeIn>
 
 				<FadeIn>
+					<div className="relative h-48 w-full overflow-hidden border-y border-white/5">
+						<PerspectiveMarquee
+							fontSize={72}
+							color="#fafafa"
+							pixelsPerFrame={1.5}
+							rotateY={-28}
+							rotateX={8}
+							perspective={1200}
+							fadeColor="#000000"
+							background="#000000"
+						/>
+					</div>
+				</FadeIn>
+
+				<FadeIn>
 					<section className="border-y border-white/5 py-12">
-						<div className="mx-auto max-w-7xl px-6 mb-2 text-center">
+						<div className="mx-auto mb-2 max-w-7xl px-6 text-center">
 							<p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
 								Capabilities
 							</p>
-							<h2 className="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+							<h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
 								Everything a SOC needs in one pipeline
 							</h2>
 						</div>
@@ -130,17 +175,16 @@ export default function DeepMailLandingPage() {
 					<FeaturesSectionDemo3 />
 				</FadeIn>
 
-
 				<FadeIn>
-					<section className="py-20 border-t border-white/5">
+					<section className="border-t border-white/5 py-20">
 						<div className="mx-auto mb-12 max-w-5xl px-6 text-center">
 							<p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
 								Inside the engine
 							</p>
-							<h2 className="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight text-white">
+							<h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
 								See how the pieces fit together
 							</h2>
-							<p className="mt-4 text-sm md:text-base text-white/40 max-w-xl mx-auto">
+							<p className="mx-auto mt-4 max-w-xl text-sm text-white/40 md:text-base">
 								Five interlocking layers turn a raw .eml into a verdict you can act on. Hover any tile.
 							</p>
 						</div>
@@ -148,8 +192,14 @@ export default function DeepMailLandingPage() {
 					</section>
 				</FadeIn>
 
-                <FadeIn>
+				<FadeIn>
 					<FeaturesAndBenefits />
+				</FadeIn>
+
+				<FadeIn>
+					<div className="py-20 px-6">
+						<CallToAction />
+					</div>
 				</FadeIn>
 
 				<FadeIn>
@@ -163,7 +213,7 @@ export default function DeepMailLandingPage() {
 
 			{uploadModalOpen && (
 				<UploadModal
-					isOpen={true}
+					isOpen
 					onClose={() => setUploadModalOpen(false)}
 					onToast={addToast}
 				/>

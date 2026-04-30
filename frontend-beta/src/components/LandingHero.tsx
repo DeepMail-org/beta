@@ -1,7 +1,13 @@
 "use client";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+
+const EtheralShadow = dynamic(
+	() => import("@/components/ui/etheral-shadow").then((m) => m.EtheralShadow),
+	{ ssr: false, loading: () => null },
+);
 
 const containerVariants: Variants = {
 	hidden: { opacity: 0 },
@@ -19,44 +25,23 @@ const itemVariants: Variants = {
 export function LandingHero({ onUploadClick }: { onUploadClick: () => void }) {
 	return (
 		<section className="relative min-h-screen flex flex-col pt-32 pb-10 overflow-hidden bg-black">
-			{/* Light-streak background — pure CSS, zero SVG filter issues */}
-			<div className="absolute inset-0 z-0 bg-black overflow-hidden" aria-hidden>
-				{/* Primary streak — bright diagonal line with glow halo */}
-				<div style={{
-					position: "absolute",
-					width: "220%",
-					height: "1px",
-					left: "-60%",
-					top: "49%",
-					transform: "rotate(-15.45deg)",
-					transformOrigin: "center center",
-					background: "rgba(255,255,255,0.85)",
-					boxShadow: "0 0 55px 16px rgba(255,255,255,0.18), 0 0 18px 4px rgba(255,255,255,0.32)",
-				}} />
-				{/* Secondary streak — softer */}
-				<div style={{
-					position: "absolute",
-					width: "220%",
-					height: "1px",
-					left: "-60%",
-					top: "65%",
-					transform: "rotate(-15.45deg)",
-					transformOrigin: "center center",
-					background: "rgba(255,255,255,0.55)",
-					boxShadow: "0 0 38px 10px rgba(255,255,255,0.11), 0 0 12px 2px rgba(255,255,255,0.20)",
-				}} />
-				{/* Tertiary ghost streak */}
-				<div style={{
-					position: "absolute",
-					width: "220%",
-					height: "1px",
-					left: "-60%",
-					top: "75%",
-					transform: "rotate(-15.45deg)",
-					transformOrigin: "center center",
-					background: "rgba(255,255,255,0.28)",
-					boxShadow: "0 0 22px 6px rgba(255,255,255,0.06), 0 0 7px 1px rgba(255,255,255,0.10)",
-				}} />
+			{/* Etheral shadow background — replaces the static streaks */}
+			<div className="absolute inset-0 z-0 bg-black" aria-hidden>
+				<EtheralShadow
+					color="rgba(255, 255, 255, 0.55)"
+					animation={{ scale: 100, speed: 90 }}
+					noise={{ opacity: 0.45, scale: 1.2 }}
+					sizing="fill"
+				/>
+				{/* Vignette to keep text legible over the shadow */}
+				<div
+					aria-hidden
+					className="pointer-events-none absolute inset-0"
+					style={{
+						background:
+							"radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.85) 100%)",
+					}}
+				/>
 			</div>
 
 			{/* Center Content */}

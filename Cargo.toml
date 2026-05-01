@@ -39,7 +39,7 @@ tonic = { version = "0.11", features = ["transport", "tls"] }
 prost = "0.12"
 prost-types = "0.12"
 async-nats = "0.35"
-sqlx = { version = "0.7", features = ["postgres", "runtime-tokio", "tls-rustls", "macros", "uuid", "chrono", "json"] }
+sqlx = { version = "0.7", features = ["postgres", "runtime-tokio", "tls-rustls", "macros", "uuid", "chrono", "json", "ipnetwork"] }
 uuid = { version = "1", features = ["v4", "v5", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }

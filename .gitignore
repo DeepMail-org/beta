@@ -1,30 +1,179 @@
-target/
+# =============================================================================
+# DeepMail .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Build Artifacts - Recursive patterns for all projects
+# -----------------------------------------------------------------------------
+**/target/
+**/dist/
+**/build/
+*.tsbuildinfo
+graphify-out/
+
+# -----------------------------------------------------------------------------
+# Frontend Dependencies
+# -----------------------------------------------------------------------------
+node_modules/
 frontend-beta/node_modules/
 frontend-beta/.next/
-backend-beta/target/
+frontend-beta/tsconfig.tsbuildinfo
 
-# Environment and secrets
+# -----------------------------------------------------------------------------
+# Environment and Secrets - Comprehensive protection
+# -----------------------------------------------------------------------------
 .env
 .env.*
+.env.local
+.env.*.local
+*.env
+**/.env
+**/.env.*
+**/.env.local
+**/.env.*.local
 frontend-beta/.env
 frontend-beta/.env.*
 
-# Package manager and logs
+# -----------------------------------------------------------------------------
+# Cryptographic Material - Keys, Certificates, Keystores
+# -----------------------------------------------------------------------------
+**/*.pem
+**/*.key
+**/*.crt
+**/*.p12
+**/*.pfx
+**/*.keystore
+**/*.jks
+**/*.der
+**/*.pkcs8
+**/*.secret
+
+# -----------------------------------------------------------------------------
+# Configuration Files - May contain sensitive data
+# -----------------------------------------------------------------------------
+**/config.toml
+**/config.yaml
+**/config.yml
+**/*.local
+**/*.secret
+
+# -----------------------------------------------------------------------------
+# Logging and Log Files
+# -----------------------------------------------------------------------------
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 bun-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Editor and OS noise
-.DS_Store
-Thumbs.db
+# -----------------------------------------------------------------------------
+# Editor and IDE - Development tools
+# -----------------------------------------------------------------------------
 .idea/
 .vscode/
-dist/
-build/
-.next/
-node_modules/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.bak
+*.cache
+.project
+.classpath
+.settings/
+*.sublime-*
+session-*
+.claude/
+# -----------------------------------------------------------------------------
+# OS-specific files
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
-/.claude/
-/target/
+# -----------------------------------------------------------------------------
+# Version Control and Merge Artifacts
+# -----------------------------------------------------------------------------
+*.orig
+*.rej
+*.patch
+.hg/
+.svn/
+
+# -----------------------------------------------------------------------------
+# Development Tools and Temporary Files
+# -----------------------------------------------------------------------------
+.claude/
+.history/
+.emacs/
+.tmp/
+.temp/
+*.tmp
+*.temp
+
+# -----------------------------------------------------------------------------
+# Test and Coverage Artifacts
+# -----------------------------------------------------------------------------
+coverage/
+.coverage/
+*.lcov
+*.prof
+tarpaulin-report.*
+report/
+
+# -----------------------------------------------------------------------------
+# Profiling and Performance Data
+# -----------------------------------------------------------------------------
+*.profdata
+*.profraw
+flamegraph.svg
+perf.data
+perf.data.*
+cracadumi-*.txt
+
+# -----------------------------------------------------------------------------
+# Database Files - Local development databases
+# -----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+*.accdb
+*.mdb
+
+# -----------------------------------------------------------------------------
+# Infrastructure as Code State (if used)
+# -----------------------------------------------------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+.vagrant/
+*.zip
+
+# -----------------------------------------------------------------------------
+# Package Lock Files - KEEP these (required for reproducible builds)
+# -----------------------------------------------------------------------------
+# NOTE: The following files are intentionally NOT ignored as they are
+# required for reproducible builds in production environments:
+# - Cargo.lock (Rust binary workspace)
+# - bun.lock / package-lock.json / yarn.lock (frontend dependencies)
+# - proto/ files (API definitions)
+# - migrations/ (database schemas)
+# - scripts/ (build and utility scripts)
+# - README.md (documentation)
+
+# -----------------------------------------------------------------------------
+# Cargo.lock - Keep for reproducible binary builds
+# DO NOT IGNORE: Required for production builds
+# -----------------------------------------------------------------------------
+# Cargo.lock is intentionally NOT ignored - needed for reproducible builds
+
+# -----------------------------------------------------------------------------
+# Frontend Lock Files - Keep for reproducible builds
+# DO NOT IGNORE: Required for production builds
+# -----------------------------------------------------------------------------
+# frontend-beta/bun.lock - intentionally NOT ignored
+# package-lock.json - intentionally NOT ignored
+# yarn.lock - intentionally NOT ignored

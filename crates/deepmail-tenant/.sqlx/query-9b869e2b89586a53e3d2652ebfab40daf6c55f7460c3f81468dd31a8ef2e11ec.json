@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE tenants\n        SET deleted_at = now(), updated_at = now(), status = 'cancelled'\n        WHERE id = $1\n          AND deleted_at IS NULL\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9b869e2b89586a53e3d2652ebfab40daf6c55f7460c3f81468dd31a8ef2e11ec"
+}

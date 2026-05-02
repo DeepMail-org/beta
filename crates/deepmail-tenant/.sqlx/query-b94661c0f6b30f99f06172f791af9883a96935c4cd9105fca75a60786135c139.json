@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE razorpay_events\n        SET processed    = true,\n            processed_at = now(),\n            error        = $2\n        WHERE event_id = $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b94661c0f6b30f99f06172f791af9883a96935c4cd9105fca75a60786135c139"
+}

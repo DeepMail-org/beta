@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO emails (\n                  tenant_id, uploaded_by, original_filename,\n                  quarantine_name, s3_bucket, s3_key,\n                  sha256_hash, md5_hash, file_size_bytes,\n                  file_extension, mime_type, magic_bytes_valid,\n                  status, rejection_reason\n                )\n                VALUES (\n                  $1, $2, $3,\n                  $4, $5, $6,\n                  $7, $8, $9,\n                  $10, $11, $12,\n                  'rejected', $13\n                )\n                RETURNING id\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Int8",
+        "Text",
+        "Text",
+        "Bool",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "464b4bd16c868b832c93d639049712fec01a2281dc763a2c059483b218288f6e"
+}

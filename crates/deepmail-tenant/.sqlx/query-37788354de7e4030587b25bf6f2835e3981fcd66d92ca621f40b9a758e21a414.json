@@ -1,0 +1,99 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT tenant_id, max_upload_size_mb,\n               sandbox_url_enabled, sandbox_file_enabled,\n               sandbox_dynamic_enabled, auto_report_on_critical,\n               retention_days,\n               notify_email AS \"notify_email: String\",\n               notify_slack_webhook, notify_custom_webhook,\n               notify_on_critical, notify_on_high, notify_on_medium\n        FROM tenant_settings\n        WHERE tenant_id = $1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "tenant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "max_upload_size_mb",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "sandbox_url_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "sandbox_file_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "sandbox_dynamic_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "auto_report_on_critical",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "retention_days",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "notify_email: String",
+        "type_info": {
+          "Custom": {
+            "name": "citext",
+            "kind": "Simple"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "notify_slack_webhook",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "notify_custom_webhook",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "notify_on_critical",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "notify_on_high",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "notify_on_medium",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "37788354de7e4030587b25bf6f2835e3981fcd66d92ca621f40b9a758e21a414"
+}

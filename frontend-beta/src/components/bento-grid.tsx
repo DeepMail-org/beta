@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { cn } from "@/lib/utils";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import {
@@ -11,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
-export default function BentoGrid() {
+export default function BentoGridClass() {
 	return (
 		<BentoGrid className="mx-auto max-w-5xl px-6 md:auto-rows-[20rem]">
 			{items.map((item, i) => (
@@ -51,7 +50,9 @@ const SkeletonOne = () => {
 			>
 				<div className="h-6 w-6 shrink-0 rounded-full bg-linear-to-r from-rose-500 to-amber-500" />
 				<div className="h-3 w-full rounded-full bg-white/8" />
-				<span className="font-mono text-[9px] font-semibold tracking-wider text-rose-300">CRIT</span>
+				<span className="font-mono text-[9px] font-semibold tracking-wider text-rose-300">
+					CRIT
+				</span>
 			</motion.div>
 			<motion.div
 				variants={variantsSecond}
@@ -66,7 +67,9 @@ const SkeletonOne = () => {
 			>
 				<div className="h-6 w-6 shrink-0 rounded-full bg-linear-to-r from-emerald-500 to-cyan-500" />
 				<div className="h-3 w-full rounded-full bg-white/8" />
-				<span className="font-mono text-[9px] font-semibold tracking-wider text-emerald-300">SAFE</span>
+				<span className="font-mono text-[9px] font-semibold tracking-wider text-emerald-300">
+					SAFE
+				</span>
 			</motion.div>
 		</motion.div>
 	);
@@ -110,17 +113,27 @@ const SkeletonThree = () => {
 			initial="initial"
 			animate="animate"
 			variants={variants}
-			transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+			transition={{
+				duration: 5,
+				repeat: Infinity,
+				repeatType: "reverse",
+			}}
 			className="relative flex h-full min-h-24 w-full flex-1 items-center justify-center overflow-hidden rounded-lg"
 			style={{
-				background: "linear-gradient(-45deg, #0f1424, #1a1230, #052028, #0a1f1a)",
+				background:
+					"linear-gradient(-45deg, #0f1424, #1a1230, #052028, #0a1f1a)",
 				backgroundSize: "400% 400%",
 			}}
 		>
-			<div className="absolute inset-0 rounded-lg" style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.6)" }} />
+			<div
+				className="absolute inset-0 rounded-lg"
+				style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.6)" }}
+			/>
 			<div className="relative font-display font-bold text-white/90">
 				<span className="font-mono text-5xl tabular-nums">87</span>
-				<span className="ml-1 font-mono text-sm text-white/55">/100</span>
+				<span className="ml-1 font-mono text-sm text-white/55">
+					/100
+				</span>
 			</div>
 		</motion.div>
 	);
@@ -128,8 +141,14 @@ const SkeletonThree = () => {
 
 // 4) GEO SHUFFLE CARDS
 const SkeletonFour = () => {
-	const first = { initial: { x: 20, rotate: -5 }, hover: { x: 0, rotate: 0 } };
-	const second = { initial: { x: -20, rotate: 5 }, hover: { x: 0, rotate: 0 } };
+	const first = {
+		initial: { x: 20, rotate: -5 },
+		hover: { x: 0, rotate: 0 },
+	};
+	const second = {
+		initial: { x: -20, rotate: 5 },
+		hover: { x: 0, rotate: 0 },
+	};
 	const card =
 		"flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-white/8 bg-black/50 p-4";
 	return (
@@ -141,21 +160,30 @@ const SkeletonFour = () => {
 		>
 			<motion.div variants={first} className={card}>
 				<IconWorldWww className="h-8 w-8 text-rose-400" stroke={1.4} />
-				<p className="mt-3 text-center text-xs font-semibold text-white/70">RU · 185.220.x</p>
+				<p className="mt-3 text-center text-xs font-semibold text-white/70">
+					RU · 185.220.x
+				</p>
 				<p className="mt-2 rounded-full border border-rose-500/40 bg-rose-500/10 px-2 py-0.5 text-[10px] text-rose-300">
 					Hostile
 				</p>
 			</motion.div>
 			<motion.div className="relative z-20 flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border border-white/15 bg-black/70 p-4">
-				<IconShieldCheck className="h-8 w-8 text-emerald-400" stroke={1.4} />
-				<p className="mt-3 text-center text-xs font-semibold text-white/70">US · CDN edge</p>
+				<IconShieldCheck
+					className="h-8 w-8 text-emerald-400"
+					stroke={1.4}
+				/>
+				<p className="mt-3 text-center text-xs font-semibold text-white/70">
+					US · CDN edge
+				</p>
 				<p className="mt-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-300">
 					Trusted
 				</p>
 			</motion.div>
 			<motion.div variants={second} className={card}>
 				<IconBolt className="h-8 w-8 text-amber-400" stroke={1.4} />
-				<p className="mt-3 text-center text-xs font-semibold text-white/70">CN · 39.x.x.x</p>
+				<p className="mt-3 text-center text-xs font-semibold text-white/70">
+					CN · 39.x.x.x
+				</p>
 				<p className="mt-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
 					Watchlist
 				</p>
@@ -187,7 +215,9 @@ const SkeletonFive = () => {
 			>
 				<div className="h-7 w-7 shrink-0 rounded-full bg-linear-to-br from-cyan-500 to-violet-500" />
 				<p className="text-[11px] leading-snug text-white/55">
-					IOC <span className="font-mono text-white/75">a1b2c3d4</span> matches a known credential-stealer family.
+					IOC{" "}
+					<span className="font-mono text-white/75">a1b2c3d4</span>{" "}
+					matches a known credential-stealer family.
 				</p>
 			</motion.div>
 			<motion.div
@@ -239,7 +269,8 @@ const items = [
 		title: "Geo-aware verdicts",
 		description: (
 			<span className="text-sm">
-				Reputation is regional. We pin every artifact to its origin so you can spot the campaign, not just the message.
+				Reputation is regional. We pin every artifact to its origin so
+				you can spot the campaign, not just the message.
 			</span>
 		),
 		header: <SkeletonFour />,

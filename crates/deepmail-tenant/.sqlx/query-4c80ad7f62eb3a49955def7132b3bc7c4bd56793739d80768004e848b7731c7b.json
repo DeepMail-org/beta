@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO razorpay_events\n          (event_id, event_type, tenant_id, payload)\n        VALUES ($1, $2, $3, $4)\n        ON CONFLICT (event_id) DO NOTHING\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Uuid",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4c80ad7f62eb3a49955def7132b3bc7c4bd56793739d80768004e848b7731c7b"
+}

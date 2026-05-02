@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT locked_until\n        FROM ip_lockouts\n        WHERE ip_address = $1\n          AND locked_until > now()\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "locked_until",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Inet"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "4c5658713dbf01f631064f5cafe31954ea000391e7704e48fbb50e8340df2566"
+}

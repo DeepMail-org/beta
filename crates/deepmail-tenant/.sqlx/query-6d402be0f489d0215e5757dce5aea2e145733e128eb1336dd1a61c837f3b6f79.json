@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE tenant_settings\n        SET sandbox_url_enabled     = $2,\n            sandbox_file_enabled    = $3,\n            sandbox_dynamic_enabled = $4,\n            updated_at              = now()\n        WHERE tenant_id = $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Bool",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6d402be0f489d0215e5757dce5aea2e145733e128eb1336dd1a61c837f3b6f79"
+}

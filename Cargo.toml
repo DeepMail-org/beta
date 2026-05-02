@@ -51,7 +51,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "fmt"]
 config = "0.14"
 axum = { version = "0.7", features = ["multipart", "ws", "macros"] }
 tower = "0.4"
-tower-http = { version = "0.5", features = ["cors", "trace", "compression-gzip"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "compression-gzip", "limit"] }
 tokio-tungstenite = "0.21"
 async-graphql = { version = "7", features = ["tracing", "uuid", "chrono"] }
 async-graphql-axum = "7"

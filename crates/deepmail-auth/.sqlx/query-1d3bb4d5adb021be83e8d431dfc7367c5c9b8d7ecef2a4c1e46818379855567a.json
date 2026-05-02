@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO ip_lockouts\n              (ip_address, locked_until, attempt_count, lockout_count)\n            VALUES ($1, $2, $3, 1)\n            ON CONFLICT (ip_address) DO UPDATE\n              SET locked_until   = EXCLUDED.locked_until,\n                  attempt_count  = ip_lockouts.attempt_count + 1,\n                  lockout_count  = ip_lockouts.lockout_count + 1,\n                  updated_at     = now()\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Inet",
+        "Timestamptz",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1d3bb4d5adb021be83e8d431dfc7367c5c9b8d7ecef2a4c1e46818379855567a"
+}

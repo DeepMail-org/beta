@@ -97,16 +97,17 @@ pub async fn create_jetstream(
 
 /// Publish a message to a NATS subject with the standard envelope.
 ///
-/// Returns once the JetStream broker has acknowledged the publish.
+/// Returns the JetStream [`PublishAck`] so the caller can read `sequence`
+/// (useful for storing a `nats_message_id` reference).
 pub async fn publish_envelope(
     js: &async_nats::jetstream::Context,
     subject: &str,
     envelope: &NatsEnvelope,
-) -> Result<(), DeepMailError> {
+) -> Result<async_nats::jetstream::publish::PublishAck, DeepMailError> {
     let payload = envelope.to_bytes()?;
-    let ack = js
+    let ack_future = js
         .publish(subject.to_string(), payload)
         .await?;
-    let _ = ack.await?;
-    Ok(())
+    let ack = ack_future.await?;
+    Ok(ack)
 }

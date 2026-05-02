@@ -22,8 +22,7 @@ pub async fn insert_audit_log(
 ) -> Result<(), AuthError> {
     let ip: Option<std::net::IpAddr> = ip_address.and_then(|s| s.parse().ok());
 
-    sqlx
-        ::query(
+    sqlx::query!(
             r#"
         INSERT INTO audit_logs
           (user_id, action, resource_type, resource_id,

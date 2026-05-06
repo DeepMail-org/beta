@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO time_anomalies (\n             email_id, date_header_ts, earliest_received_ts,\n             latest_received_ts, future_dated, date_predates_recv,\n             max_hop_delay_sec, suspicious_delay,\n             total_transit_sec, hop_count\n           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n           ON CONFLICT (email_id) DO UPDATE SET\n             date_header_ts        = EXCLUDED.date_header_ts,\n             earliest_received_ts  = EXCLUDED.earliest_received_ts,\n             latest_received_ts    = EXCLUDED.latest_received_ts,\n             future_dated          = EXCLUDED.future_dated,\n             date_predates_recv    = EXCLUDED.date_predates_recv,\n             max_hop_delay_sec     = EXCLUDED.max_hop_delay_sec,\n             suspicious_delay      = EXCLUDED.suspicious_delay,\n             total_transit_sec     = EXCLUDED.total_transit_sec,\n             hop_count             = EXCLUDED.hop_count",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Timestamptz",
+        "Timestamptz",
+        "Timestamptz",
+        "Bool",
+        "Bool",
+        "Int4",
+        "Bool",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f94789ab7b3c0b961aa46bca5517d23842327f37545f4dcde8112b0e2f12a304"
+}

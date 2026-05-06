@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO header_analyses (\n             email_id, tenant_id, overall_risk_score,\n             spf_result, spf_domain, spf_sender_ip,\n             dkim_result, dkim_domain, dkim_selector,\n             dmarc_result, dmarc_policy, dmarc_domain,\n             return_path_domain, return_path_mismatch,\n             reply_to_domain, reply_to_mismatch,\n             from_domain,\n             message_id_valid, message_id_domain,\n             message_id_domain_match, message_id_fake_pattern,\n             x_mailer, x_mailer_risk, x_mailer_known_kit,\n             sender_spoofing_likely\n           ) VALUES (\n             $1, $2, $3,\n             $4, $5, $6,\n             $7, $8, $9,\n             $10, $11, $12,\n             $13, $14,\n             $15, $16,\n             $17,\n             $18, $19,\n             $20, $21,\n             $22, $23, $24,\n             $25\n           ) ON CONFLICT (email_id) DO UPDATE SET\n             overall_risk_score    = EXCLUDED.overall_risk_score,\n             spf_result            = EXCLUDED.spf_result,\n             spf_domain            = EXCLUDED.spf_domain,\n             spf_sender_ip         = EXCLUDED.spf_sender_ip,\n             dkim_result           = EXCLUDED.dkim_result,\n             dkim_domain           = EXCLUDED.dkim_domain,\n             dkim_selector         = EXCLUDED.dkim_selector,\n             dmarc_result          = EXCLUDED.dmarc_result,\n             dmarc_policy          = EXCLUDED.dmarc_policy,\n             dmarc_domain          = EXCLUDED.dmarc_domain,\n             return_path_domain    = EXCLUDED.return_path_domain,\n             return_path_mismatch  = EXCLUDED.return_path_mismatch,\n             reply_to_domain       = EXCLUDED.reply_to_domain,\n             reply_to_mismatch     = EXCLUDED.reply_to_mismatch,\n             from_domain           = EXCLUDED.from_domain,\n             message_id_valid      = EXCLUDED.message_id_valid,\n             message_id_domain     = EXCLUDED.message_id_domain,\n             message_id_domain_match = EXCLUDED.message_id_domain_match,\n             message_id_fake_pattern = EXCLUDED.message_id_fake_pattern,\n             x_mailer              = EXCLUDED.x_mailer,\n             x_mailer_risk         = EXCLUDED.x_mailer_risk,\n             x_mailer_known_kit    = EXCLUDED.x_mailer_known_kit,\n             sender_spoofing_likely= EXCLUDED.sender_spoofing_likely,\n             analyzed_at           = now()\n           RETURNING id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Float4",
+        "Text",
+        "Text",
+        "Inet",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Bool",
+        "Text",
+        "Bool",
+        "Text",
+        "Bool",
+        "Text",
+        "Bool",
+        "Bool",
+        "Text",
+        "Text",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "5a6b8c3aed0563b019fbe3cdf84506f4754484b069f5816414038162edc7738c"
+}

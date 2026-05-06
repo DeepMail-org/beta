@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT pattern, match_type, kit_name, risk_level\n           FROM mta_fingerprints",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "pattern",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "match_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "kit_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "risk_level",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "1c1632929a8cbd0597505db20f20fa535e7446d942d2ece185d271ecc0a479d5"
+}

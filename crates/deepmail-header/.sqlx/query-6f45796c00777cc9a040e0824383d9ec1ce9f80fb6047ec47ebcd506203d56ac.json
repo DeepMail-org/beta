@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT future_dated, date_predates_recv,\n                  suspicious_delay, max_hop_delay_sec,\n                  total_transit_sec, hop_count\n           FROM time_anomalies\n           WHERE email_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "future_dated",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 1,
+        "name": "date_predates_recv",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 2,
+        "name": "suspicious_delay",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "max_hop_delay_sec",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "total_transit_sec",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "hop_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "6f45796c00777cc9a040e0824383d9ec1ce9f80fb6047ec47ebcd506203d56ac"
+}

@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT check_name, severity, passed, evidence, raw_value, risk_weight\n           FROM header_findings\n           WHERE email_id = $1\n           ORDER BY created_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "check_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "severity",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "passed",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "evidence",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "raw_value",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "risk_weight",
+        "type_info": "Float4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "569e8a17c147a41237c0b3ab3f3cc557dcbf8c9784e4f226eec76da20f906da9"
+}

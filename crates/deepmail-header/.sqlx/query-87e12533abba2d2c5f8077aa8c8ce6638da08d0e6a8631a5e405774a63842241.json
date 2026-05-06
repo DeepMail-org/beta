@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM header_findings WHERE analysis_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "87e12533abba2d2c5f8077aa8c8ce6638da08d0e6a8631a5e405774a63842241"
+}

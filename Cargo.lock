@@ -1340,10 +1340,23 @@ name = "deepmail-hashdb"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
+ "config",
  "deepmail-common",
+ "futures",
+ "prost",
+ "prost-types",
+ "redis",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "ssdeep",
+ "thiserror 1.0.69",
  "tokio",
+ "tonic",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
@@ -1459,10 +1472,26 @@ name = "deepmail-parser"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-nats",
+ "aws-config",
+ "aws-credential-types",
+ "aws-sdk-s3",
+ "bytes",
+ "chrono",
+ "config",
  "deepmail-common",
+ "futures",
+ "hex",
+ "mail-parser",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "sqlx",
+ "thiserror 1.0.69",
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
@@ -2592,6 +2621,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
+name = "libfuzzy-sys"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df95a96f8a8ba88a85a2f896cc33090baf0962f265876d8da454097b5fb38a04"
+dependencies = [
+ "cc",
+ "libc",
+]
+
+[[package]]
 name = "libm"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2654,6 +2693,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "234cf4f4a04dc1f57e24b96cc0cd600cf2af460d4161ac5ecdd0af8e1f3b2a38"
 dependencies = [
  "hashbrown 0.15.5",
+]
+
+[[package]]
+name = "mail-parser"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93c3b9e5d8b17faf573330bbc43b37d6e918c0a3bf8a88e7d0a220ebc84af9fc"
+dependencies = [
+ "encoding_rs",
 ]
 
 [[package]]
@@ -3213,7 +3261,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22505a5c94da8e3b7c2996394d1c933236c4d743e81a410bcca4e6989fc066a4"
 dependencies = [
  "bytes",
- "heck 0.4.1",
+ "heck 0.5.0",
  "itertools",
  "log",
  "multimap",
@@ -4260,6 +4308,16 @@ dependencies = [
  "url",
  "urlencoding",
  "uuid",
+]
+
+[[package]]
+name = "ssdeep"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3568c2837d9456f8dbe56cd6d59c5470b8a46374470c2d7555a7bc179bd7af69"
+dependencies = [
+ "libc",
+ "libfuzzy-sys",
 ]
 
 [[package]]

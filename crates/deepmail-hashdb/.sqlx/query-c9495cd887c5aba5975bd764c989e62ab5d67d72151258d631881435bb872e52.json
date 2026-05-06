@@ -1,0 +1,39 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO file_hashes (\n          sha256, md5, sha1, ssdeep, tlsh, imphash,\n          file_type, file_size_bytes,\n          verdict, verdict_confidence, verdict_source,\n          malware_family, analysis_required\n        )\n        VALUES (\n          $1, $2, $3, $4, $5, $6,\n          $7, $8,\n          $9, $10, $11,\n          $12,\n          CASE WHEN $9 = 'unknown' THEN true ELSE false END\n        )\n        ON CONFLICT (sha256) DO UPDATE\n          SET seen_count        = file_hashes.seen_count + 1,\n              last_seen         = now(),\n              updated_at        = now(),\n              verdict           = CASE\n                WHEN EXCLUDED.verdict != 'unknown'\n                THEN EXCLUDED.verdict\n                ELSE file_hashes.verdict\n              END,\n              verdict_confidence = CASE\n                WHEN EXCLUDED.verdict != 'unknown'\n                THEN EXCLUDED.verdict_confidence\n                ELSE file_hashes.verdict_confidence\n              END,\n              malware_family    = COALESCE(EXCLUDED.malware_family, file_hashes.malware_family),\n              analysis_required = CASE\n                WHEN EXCLUDED.verdict != 'unknown'\n                THEN false\n                ELSE file_hashes.analysis_required\n              END\n        RETURNING id,\n                  (xmax::text = '0') AS \"was_new!: bool\"\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "was_new!: bool",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Int8",
+        "Text",
+        "Float4",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "c9495cd887c5aba5975bd764c989e62ab5d67d72151258d631881435bb872e52"
+}

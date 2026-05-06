@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT id, ssdeep AS \"ssdeep!: String\"\n        FROM file_hashes\n        WHERE ssdeep IS NOT NULL\n          AND sha256 != $2\n        ORDER BY last_seen DESC\n        LIMIT $1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "ssdeep!: String",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true
+    ]
+  },
+  "hash": "508f71df7a34399001563bdc71884618e70bce253aac856f20ba843b1c02cd33"
+}

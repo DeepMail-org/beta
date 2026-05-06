@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO hash_clusters\n          (representative_hash_id, cluster_hash_id, similarity_pct, method)\n        VALUES ($1, $2, $3, $4)\n        ON CONFLICT (representative_hash_id, cluster_hash_id, method)\n        DO NOTHING\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "bdab382c3c0fe9e311385c5d2584907b84f939337425eba1673693cad30a17a2"
+}

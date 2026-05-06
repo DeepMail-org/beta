@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO received_hops (\n                parsed_email_id, hop_index,\n                from_host, by_host, for_address, via_protocol,\n                received_at, raw_value\n            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Timestamptz",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e6793dd728b9d9e2c9fbef0655d7e4ded0ddd993d429597ba9ee7bb1c0e00d72"
+}

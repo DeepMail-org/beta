@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO parsed_emails (\n            email_id, tenant_id, message_id, subject,\n            from_address, to_addresses, cc_addresses, bcc_addresses,\n            reply_to, date_sent, body_text, body_html, attachment_count\n        ) VALUES (\n            $1, $2, $3, $4,\n            $5, $6, $7, $8,\n            $9, $10, $11, $12, $13\n        )\n        ON CONFLICT (email_id) DO UPDATE\n            SET subject          = EXCLUDED.subject,\n                from_address     = EXCLUDED.from_address,\n                attachment_count = EXCLUDED.attachment_count,\n                parsed_at        = now()\n        RETURNING id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Text",
+        "Text",
+        "TextArray",
+        "TextArray",
+        "TextArray",
+        "Text",
+        "Timestamptz",
+        "Text",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "7bb48f52dc50acb65ae7da7507db46f7802d8b067cd0861f31fc0c087b851edb"
+}

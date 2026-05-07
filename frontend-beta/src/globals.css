@@ -1,25 +1,34 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
-@import url("https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap");
-@import "@fontsource/geist-sans";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
 	--color-background: #000000;
-	--color-foreground: #f4f4f5;
-	--color-secondary: #d4d4d8;
-	--color-muted: #9ca3af;
-	--color-dimmed: #4b5563;
-	--color-accent: #ffffff;
+	--color-foreground: #fafafa;
+	--color-secondary: #a1a1aa;
+	--color-muted: #71717a;
+	--color-dimmed: #3f3f46;
+	--color-accent: #3b82f6;
+	--color-accent-soft: #60a5fa;
+	--color-surface: #0a0a0a;
+	--color-surface-2: #121212;
+	--color-border: #27272a;
+	--color-success: #10b981;
+	--color-warning: #f59e0b;
+	--color-danger: #ef4444;
+	
+	--font-sans: "Inter", "Geist Sans", "DM Sans", sans-serif;
+	--font-display: "Space Grotesk", "General Sans", sans-serif;
+	--font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
 }
 
 :root {
 	/* ── Base backgrounds ── */
 	--background: #000000;
-	--surface: #000000;
-	--surface-2: #000000;
-	--surface-3: #000000;
+	--surface: #0a0a0a;
+	--surface-2: #121212;
+	--surface-3: #18181b;
 
 	/* ── Text ── */
 	--foreground: #f4f4f5;
@@ -28,16 +37,16 @@
 	--dimmed: #4b5563;
 
 	/* ── Glass layers ── */
-	--border: rgba(255, 255, 255, 0.06);
+	--border: rgba(255, 255, 255, 0.05);
 	--border-hover: rgba(255, 255, 255, 0.1);
-	--glass: rgba(255, 255, 255, 0.04);
-	--glass-strong: rgba(255, 255, 255, 0.08);
-	--glass-hover: rgba(255, 255, 255, 0.06);
+	--glass: rgba(255, 255, 255, 0.03);
+	--glass-strong: rgba(255, 255, 255, 0.06);
+	--glass-hover: rgba(255, 255, 255, 0.05);
 
 	/* ── Accent (monochrome only) ── */
-	--accent: #ffffff;
-	--accent-soft: rgba(255, 255, 255, 0.7);
-	--accent-muted: rgba(255, 255, 255, 0.15);
+	--accent: #3b82f6;
+	--accent-soft: rgba(59, 130, 246, 0.2);
+	--accent-muted: rgba(59, 130, 246, 0.1);
 
 	/* ── Metallic headline gradient ── */
 	--gradient-headline: linear-gradient(to bottom, #ffffff 0%, #a1a1aa 100%);
@@ -45,7 +54,7 @@
 	/* ── Subtle background glow ── */
 	--bg-glow: radial-gradient(
 		circle at 50% 40%,
-		rgba(255, 255, 255, 0.045),
+		rgba(59, 130, 246, 0.04),
 		transparent 62%
 	);
 
@@ -192,19 +201,19 @@ h4,
    ═════════════════════════════════════════════════════════ */
 :root {
 	--hf-surface: #0a0a0a;
-	--hf-border: rgba(255, 255, 255, 0.06);
-	--hf-border-hover: rgba(255, 255, 255, 0.12);
-	--hf-glass: rgba(255, 255, 255, 0.04);
-	--hf-glass-strong: rgba(255, 255, 255, 0.08);
-	--hf-glass-hover: rgba(255, 255, 255, 0.06);
-	--hf-accent: #ffffff;
-	--hf-accent-soft: rgba(255, 255, 255, 0.1);
-	--hf-accent-strong: rgba(255, 255, 255, 0.2);
-	--hf-danger: #f87171;
-	--hf-warning: #fbbf24;
-	--hf-success: #4ade80;
-	--hf-info: #60a5fa;
-	--hf-orange: #fb923c;
+	--hf-border: rgba(255, 255, 255, 0.05);
+	--hf-border-hover: rgba(255, 255, 255, 0.1);
+	--hf-glass: rgba(255, 255, 255, 0.03);
+	--hf-glass-strong: rgba(255, 255, 255, 0.06);
+	--hf-glass-hover: rgba(255, 255, 255, 0.05);
+	--hf-accent: #3b82f6;
+	--hf-accent-soft: rgba(59, 130, 246, 0.2);
+	--hf-accent-strong: rgba(59, 130, 246, 0.4);
+	--hf-danger: #ef4444;
+	--hf-warning: #f59e0b;
+	--hf-success: #10b981;
+	--hf-info: #3b82f6;
+	--hf-orange: #f97316;
 	--hf-mono: ui-monospace, "JetBrains Mono", "IBM Plex Mono", Menlo, monospace;
 	--hf-display: "General Sans", "Space Grotesk", sans-serif;
 	--hf-r: 8px;

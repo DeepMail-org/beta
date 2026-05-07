@@ -17,21 +17,21 @@ export function Card({
 	children: ReactNode;
 }) {
 	return (
-		<section className={`hf-card ${className}`}>
+		<section className={`glass rounded-xl border border-border overflow-hidden flex flex-col ${className}`}>
 			{(title || actions) && (
-				<header className="hf-card-header">
+				<header className="px-5 py-4 border-b border-border flex items-center justify-between gap-4 bg-surface/50">
 					<div className="min-w-0">
-						{title && <h3 className="hf-card-title">{title}</h3>}
+						{title && <h3 className="text-sm font-display font-semibold tracking-wide text-foreground">{title}</h3>}
 						{subtitle && (
-							<p className="text-[11px] opacity-60 mt-0.5 truncate">
+							<p className="text-xs text-muted mt-1 truncate">
 								{subtitle}
 							</p>
 						)}
 					</div>
-					{actions && <div className="hf-card-actions">{actions}</div>}
+					{actions && <div className="flex items-center gap-2 flex-shrink-0">{actions}</div>}
 				</header>
 			)}
-			<div>{children}</div>
+			<div className="p-5 flex-1">{children}</div>
 		</section>
 	);
 }
@@ -49,19 +49,20 @@ export function StatCard({
 	trend?: "up" | "down" | "flat";
 	icon?: ReactNode;
 }) {
-	const trendClass =
-		trend === "up" ? "is-up" : trend === "down" ? "is-down" : "is-flat";
+	const trendColor =
+		trend === "up" ? "text-success" : trend === "down" ? "text-danger" : "text-muted";
 	const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "→";
+	
 	return (
-		<div className="hf-stat-card">
-			<div className="hf-stat-header">
-				<span className="hf-stat-label">{label}</span>
-				{icon && <span className="hf-stat-icon">{icon}</span>}
+		<div className="glass rounded-xl border border-border p-5 flex flex-col justify-between hover:border-border-hover transition-colors">
+			<div className="flex items-center justify-between mb-3 text-muted">
+				<span className="text-xs font-medium uppercase tracking-wider">{label}</span>
+				{icon && <span className="text-muted">{icon}</span>}
 			</div>
-			<div className="hf-stat-value">{value}</div>
+			<div className="text-3xl font-display font-semibold text-foreground tracking-tight">{value}</div>
 			{change && (
-				<div className={`hf-stat-change ${trendClass}`}>
-					<span aria-hidden>{arrow}</span> {change}
+				<div className={`text-xs mt-3 flex items-center gap-1.5 font-medium ${trendColor}`}>
+					<span aria-hidden className="text-[10px]">{arrow}</span> {change}
 				</div>
 			)}
 		</div>
@@ -79,17 +80,22 @@ export function Btn({
 	variant?: "default" | "accent" | "danger" | "success";
 	size?: "sm" | "md";
 }) {
-	const v =
-		variant === "accent"
-			? "hf-btn-accent"
-			: variant === "danger"
-				? "hf-btn-danger"
-				: variant === "success"
-					? "hf-btn-success"
-					: "";
-	const s = size === "sm" ? "text-[10px] px-2.5 py-1" : "";
+	const baseClass = "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none";
+	
+	const variantClasses = {
+		default: "bg-surface-2 text-foreground border border-border hover:bg-surface-2/80 focus:ring-border",
+		accent: "bg-accent text-white hover:bg-accent/90 focus:ring-accent",
+		danger: "bg-danger text-white hover:bg-danger/90 focus:ring-danger",
+		success: "bg-success text-white hover:bg-success/90 focus:ring-success",
+	};
+	
+	const sizeClasses = {
+		sm: "text-xs px-3 py-1.5",
+		md: "text-sm px-4 py-2",
+	};
+	
 	return (
-		<button {...rest} className={`hf-btn ${v} ${s} ${className}`.trim()}>
+		<button {...rest} className={`${baseClass} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim()}>
 			{children}
 		</button>
 	);
@@ -105,13 +111,13 @@ export function Search({
 	onChange?: (v: string) => void;
 }) {
 	return (
-		<div className="hf-search">
+		<div className="relative flex items-center w-full max-w-sm">
 			<svg
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={1.6}
-				className="w-3.5 h-3.5 opacity-50"
+				strokeWidth={2}
+				className="absolute left-3 w-4 h-4 text-muted pointer-events-none"
 			>
 				<circle cx="11" cy="11" r="7" />
 				<path d="m20 20-3.5-3.5" strokeLinecap="round" />
@@ -120,7 +126,7 @@ export function Search({
 				value={value ?? ""}
 				onChange={(e) => onChange?.(e.target.value)}
 				placeholder={placeholder}
-				className="bg-transparent outline-none w-full text-xs"
+				className="w-full bg-surface-2 border border-border text-foreground text-sm rounded-lg pl-9 pr-3 py-1.5 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
 			/>
 		</div>
 	);
@@ -135,24 +141,20 @@ export function Severity({
 	level: SeverityLevel;
 	label?: string;
 }) {
-	const cls =
-		level === "critical"
-			? "hf-sev-danger"
-			: level === "warning"
-				? "hf-sev-warning"
-				: level === "caution"
-					? "hf-sev-caution"
-					: "hf-sev-ok";
-	const text =
-		label ??
-		(level === "critical"
-			? "Critical"
-			: level === "warning"
-				? "High"
-				: level === "caution"
-					? "Medium"
-					: "Safe");
-	return <span className={`hf-severity ${cls}`}>{text}</span>;
+	const config = {
+		critical: { bg: "bg-danger/10", text: "text-danger", border: "border-danger/20", defaultLabel: "Critical" },
+		warning: { bg: "bg-warning/10", text: "text-warning", border: "border-warning/20", defaultLabel: "High" },
+		caution: { bg: "bg-accent/10", text: "text-accent", border: "border-accent/20", defaultLabel: "Medium" },
+		ok: { bg: "bg-success/10", text: "text-success", border: "border-success/20", defaultLabel: "Safe" },
+	};
+	
+	const { bg, text, border, defaultLabel } = config[level];
+	
+	return (
+		<span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider border ${bg} ${text} ${border}`}>
+			{label ?? defaultLabel}
+		</span>
+	);
 }
 
 /* ── Tabs / Toggle / Tag ───────────────────────────────── */
@@ -166,20 +168,32 @@ export function Tabs({
 	onChange: (id: string) => void;
 }) {
 	return (
-		<div className="hf-tabs">
-			{tabs.map((t) => (
-				<button
-					key={t.id}
-					type="button"
-					onClick={() => onChange(t.id)}
-					className={`hf-tab ${active === t.id ? "is-active" : ""}`}
-				>
-					{t.label}
-					{typeof t.count === "number" && (
-						<span className="hf-tab-count">{t.count}</span>
-					)}
-				</button>
-			))}
+		<div className="flex items-center gap-1 border-b border-border mb-4">
+			{tabs.map((t) => {
+				const isActive = active === t.id;
+				return (
+					<button
+						key={t.id}
+						type="button"
+						onClick={() => onChange(t.id)}
+						className={`relative px-4 py-2 text-sm font-medium transition-colors ${
+							isActive ? "text-accent" : "text-muted hover:text-secondary"
+						}`}
+					>
+						<span className="flex items-center gap-2">
+							{t.label}
+							{typeof t.count === "number" && (
+								<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isActive ? 'bg-accent/10 text-accent' : 'bg-surface-2 text-muted'}`}>
+									{t.count}
+								</span>
+							)}
+						</span>
+						{isActive && (
+							<span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-accent rounded-t-full" />
+						)}
+					</button>
+				);
+			})}
 		</div>
 	);
 }
@@ -200,9 +214,16 @@ export function Toggle({
 			aria-checked={on}
 			aria-label={label}
 			onClick={() => onChange(!on)}
-			className={`hf-toggle ${on ? "is-on" : ""}`}
+			className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background ${
+				on ? 'bg-accent' : 'bg-surface-2'
+			}`}
 		>
-			<span className="hf-toggle-knob" />
+			<span
+				aria-hidden="true"
+				className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+					on ? 'translate-x-4' : 'translate-x-0'
+				}`}
+			/>
 		</button>
 	);
 }
@@ -214,15 +235,18 @@ export function Tag({
 	children: ReactNode;
 	tone?: "default" | "danger" | "warn" | "ok";
 }) {
-	const t =
-		tone === "danger"
-			? "is-danger"
-			: tone === "warn"
-				? "is-warn"
-				: tone === "ok"
-					? "is-ok"
-					: "";
-	return <span className={`hf-tag ${t}`.trim()}>{children}</span>;
+	const config = {
+		default: "bg-surface-2 text-secondary border border-border",
+		danger: "bg-danger/10 text-danger border border-danger/20",
+		warn: "bg-warning/10 text-warning border border-warning/20",
+		ok: "bg-success/10 text-success border border-success/20",
+	};
+	
+	return (
+		<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${config[tone]}`}>
+			{children}
+		</span>
+	);
 }
 
 /* ── Charts ───────────────────────────────────────────── */

@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO dkim_key_cache (selector, domain, public_key_pem, algorithm, ttl_seconds, fetched_at)\n           VALUES ($1, $2, $3, $4, $5, now())\n           ON CONFLICT (selector, domain) DO UPDATE SET\n             public_key_pem = EXCLUDED.public_key_pem,\n             algorithm      = EXCLUDED.algorithm,\n             ttl_seconds    = EXCLUDED.ttl_seconds,\n             fetched_at     = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "00b9803fbf910d61e87fe5b1125317b69649baa6078c9d6955ab5e7029d8fcf7"
+}

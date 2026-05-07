@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n             id, email_id, tenant_id,\n             raw_dkim_headers, overall_verdict,\n             replay_confidence, signals_json,\n             analyzed_at\n           FROM dkim_analyses\n           WHERE email_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "email_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "tenant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "raw_dkim_headers",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 4,
+        "name": "overall_verdict",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "replay_confidence",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 6,
+        "name": "signals_json",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 7,
+        "name": "analyzed_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9f50ca9f06e21fba7eaaa2345161bf6e0a191b6e263037db2f96e0fbc2045368"
+}

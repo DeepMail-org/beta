@@ -4,7 +4,7 @@ version.workspace     = true
 edition.workspace     = true
 authors.workspace     = true
 license.workspace     = true
-description = "DeepMail service: dkim"
+description = "DKIM replay attack detection — RFC 6376 signature verification and replay confidence scoring"
 
 [[bin]]
 name = "deepmail-dkim"
@@ -14,6 +14,30 @@ path = "src/main.rs"
 deepmail-common = { path = "../deepmail-common" }
 
 tokio.workspace              = true
+tonic.workspace              = true
+prost.workspace              = true
+prost-types.workspace        = true
+async-nats.workspace         = true
+sqlx.workspace               = true
+uuid.workspace               = true
+chrono.workspace             = true
+serde.workspace              = true
+serde_json.workspace         = true
+thiserror.workspace          = true
+anyhow.workspace             = true
 tracing.workspace            = true
 tracing-subscriber.workspace = true
-anyhow.workspace             = true
+config.workspace             = true
+futures.workspace            = true
+
+# Cryptography primitives (RFC 6376 DKIM verification)
+base64 = "0.22"
+sha2 = "0.10"
+rsa = { version = "0.9", features = ["sha2"] }
+ed25519-dalek = { version = "2", features = ["pkcs8"] }
+
+# DNS resolution for DKIM key lookups
+hickory-resolver = { version = "0.24", features = ["tokio-runtime"] }
+
+# Email parsing
+mail-parser = "0.9"

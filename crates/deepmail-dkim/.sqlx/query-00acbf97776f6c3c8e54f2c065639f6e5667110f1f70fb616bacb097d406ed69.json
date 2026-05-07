@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n             id, analysis_id, selector, domain, algorithm,\n             canonicalization, signed_headers,\n             body_hash_claimed, body_hash_computed, body_hash_match,\n             signature_timestamp, signature_valid, key_found_in_dns\n           FROM dkim_signatures\n           WHERE analysis_id = $1\n           ORDER BY created_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "analysis_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "selector",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "domain",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "algorithm",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "canonicalization",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "signed_headers",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "body_hash_claimed",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "body_hash_computed",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "body_hash_match",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "signature_timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "signature_valid",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "key_found_in_dns",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "00acbf97776f6c3c8e54f2c065639f6e5667110f1f70fb616bacb097d406ed69"
+}

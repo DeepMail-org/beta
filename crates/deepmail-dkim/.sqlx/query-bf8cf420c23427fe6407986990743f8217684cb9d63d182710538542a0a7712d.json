@@ -1,0 +1,53 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT selector, domain, public_key_pem, algorithm, fetched_at, ttl_seconds\n           FROM dkim_key_cache\n           WHERE selector = $1 AND domain = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "selector",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "domain",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "public_key_pem",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "algorithm",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "fetched_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "ttl_seconds",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "bf8cf420c23427fe6407986990743f8217684cb9d63d182710538542a0a7712d"
+}

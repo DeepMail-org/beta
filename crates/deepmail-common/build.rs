@@ -11,6 +11,7 @@ use std::path::PathBuf;
 const PROTO_FILES: &[&str] = &[
     "proto/auth.proto",
     "proto/billing.proto",
+    "proto/body.proto",
     "proto/dkim.proto",
     "proto/geo.proto",
     "proto/graph.proto",

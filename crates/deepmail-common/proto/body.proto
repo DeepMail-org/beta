@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package deepmail.body;
+
+service BodyAnalyzer {
+  rpc AnalyzeEmail(BodyAnalyzeRequest) returns (BodyAnalyzeResponse);
+  rpc GetAnalysis(BodyGetRequest) returns (BodyAnalyzeResponse);
+}
+
+message BodyAnalyzeRequest {
+  string email_id  = 1;
+  string tenant_id = 2;
+}
+
+message BodyGetRequest {
+  string email_id  = 1;
+  string tenant_id = 2;
+}
+
+message BodyAnalyzeResponse {
+  string email_id            = 1;
+  string analysis_id         = 2;
+  int32  url_count           = 3;
+  int32  qr_code_count       = 4;
+  float  final_phishing_score = 5;
+  string verdict             = 6;
+  bool   has_obfuscation     = 7;
+  bool   has_tracking_pixels = 8;
+}

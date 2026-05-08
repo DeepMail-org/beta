@@ -27,6 +27,12 @@ pub mod proto {
         tonic::include_proto!("deepmail.billing");
     }
 
+    /// Email body content analysis types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod body {
+        tonic::include_proto!("deepmail.body");
+    }
+
     /// DKIM replay analysis types.
     #[allow(missing_docs, clippy::all)]
     pub mod dkim {

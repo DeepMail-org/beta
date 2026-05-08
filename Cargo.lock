@@ -1487,10 +1487,24 @@ name = "deepmail-ip"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-nats",
+ "chrono",
+ "config",
  "deepmail-common",
+ "futures",
+ "ipnetwork 0.21.1",
+ "prost",
+ "redis",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 1.0.69",
  "tokio",
+ "tonic",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

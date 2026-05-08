@@ -75,6 +75,12 @@ pub mod proto {
         tonic::include_proto!("deepmail.ioc");
     }
 
+    /// IP reputation intelligence types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod ip {
+        tonic::include_proto!("deepmail.ip");
+    }
+
     /// AI/ML inference types.
     #[allow(missing_docs, clippy::all)]
     pub mod ml {

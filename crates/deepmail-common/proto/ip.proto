@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package deepmail.ip;
+
+service IpIntelligence {
+  rpc AnalyzeEmail (IpAnalyzeRequest)    returns (IpAnalyzeResponse);
+  rpc CheckIp      (IpCheckRequest)      returns (IpCheckResponse);
+  rpc BulkCheckIp  (IpBulkCheckRequest)  returns (IpBulkCheckResponse);
+}
+
+message IpAnalyzeRequest {
+  string email_id  = 1;
+  string tenant_id = 2;
+}
+
+message IpAnalyzeResponse {
+  string email_id        = 1;
+  int32  ips_analyzed    = 2;
+  float  max_threat_score = 3;
+  string max_verdict     = 4;
+  repeated IpResult results = 5;
+  bool   cached          = 6;
+}
+
+message IpCheckRequest {
+  string ip_address = 1;
+}
+
+message IpCheckResponse {
+  IpResult result = 1;
+}
+
+message IpBulkCheckRequest {
+  repeated string ip_addresses = 1;
+}
+
+message IpBulkCheckResponse {
+  repeated IpResult results = 1;
+}
+
+message IpResult {
+  string ip_address        = 1;
+  float  threat_score      = 2;
+  string threat_verdict    = 3;
+  repeated string feed_hits = 4;
+  int32  abuse_score       = 5;
+  repeated int32 shodan_ports = 6;
+  repeated string shodan_tags = 7;
+  repeated string shodan_vulns = 8;
+  string shodan_org        = 9;
+  repeated string pdns_hostnames = 10;
+  string bgp_prefix        = 11;
+  int32  bgp_asn           = 12;
+  string bgp_holder        = 13;
+  bool   bgp_announced     = 14;
+  bool   is_bogon          = 15;
+  int32  sighting_count    = 16;
+}

@@ -19,6 +19,7 @@ const PROTO_FILES: &[&str] = &[
     "proto/homograph.proto",
     "proto/intel.proto",
     "proto/ioc.proto",
+    "proto/ip.proto",
     "proto/ml.proto",
     "proto/notify.proto",
     "proto/report.proto",

@@ -3,72 +3,59 @@ syntax = "proto3";
 package deepmail.ioc;
 
 service IocExtractor {
-  rpc ExtractIocs  (IocExtractionRequest) returns (IocExtractionResult);
-  rpc GetEmailIocs (GetEmailIocsRequest)  returns (GetEmailIocsResult);
+  rpc ExtractAndEnrich(IocExtractRequest) returns (IocExtractResponse);
+  rpc GetEmailIocs(IocEmailRequest) returns (IocEmailResponse);
+  rpc GetIocNode(IocNodeRequest) returns (IocNodeResponse);
+  rpc GetCampaign(CampaignRequest) returns (CampaignResponse);
 }
 
-enum IocType {
-  IP            = 0;
-  URL           = 1;
-  DOMAIN        = 2;
-  EMAIL_ADDRESS = 3;
-  HASH_MD5      = 4;
-  HASH_SHA256   = 5;
-  HASH_SSDEEP   = 6;
-  FILENAME      = 7;
-  C2_SERVER     = 8;
-}
-
-enum IocSeverity {
-  INFO     = 0;
-  LOW      = 1;
-  MEDIUM   = 2;
-  HIGH     = 3;
-  CRITICAL = 4;
-}
-
-message IocExtractionRequest {
-  string email_id    = 1;
-  string tenant_id   = 2;
-  string raw_headers = 3;
-  string body_plain  = 4;
-  string body_html   = 5;
-  repeated string attachment_hashes = 6;
-}
-
-message IocExtractionResult {
-  string   email_id     = 1;
-  repeated IocNode iocs = 2;
-  repeated IocRelation relations = 3;
-  bool     c2_detected  = 4;
-}
-
-message IocNode {
-  string      id              = 1;
-  IocType     ioc_type        = 2;
-  string      value           = 3;
-  float       confidence      = 4;
-  IocSeverity severity        = 5;
-  repeated string tags        = 6;
-  bool        is_c2           = 7;
-  string      c2_protocol     = 8;
-  string      location        = 9;
-  string      context_snippet = 10;
-}
-
-message IocRelation {
-  string source_id     = 1;
-  string target_id     = 2;
-  string relation_type = 3;
-  float  confidence    = 4;
-}
-
-message GetEmailIocsRequest {
-  string email_id  = 1;
+message IocExtractRequest {
+  string email_id = 1;
   string tenant_id = 2;
 }
 
-message GetEmailIocsResult {
-  string   email_id     = 1;
-  repeated IocNode iocs = 2;
+message IocExtractResponse {
+  string email_id = 1;
+  int32 ioc_count = 2;
+  int32 malicious_count = 3;
+  string campaign_id = 4;
+  string campaign_status = 5;
+}
+
+message IocEmailRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+}
+
+message IocEmailResponse {
+  repeated IocNodeProto iocs = 1;
+}
+
+message IocNodeRequest {
+  string ioc_id = 1;
+}
+
+message IocNodeResponse {
+  IocNodeProto node = 1;
+}
+
+message IocNodeProto {
+  string id = 1;
+  string ioc_type = 2;
+  string ioc_value = 3;
+  string threat_level = 4;
+  float intel_score = 5;
+  int32 sighting_count = 6;
+}
+
+message CampaignRequest {
+  string campaign_id = 1;
+}
+
+message CampaignResponse {
+  string campaign_id = 1;
+  string name = 2;
+  string status = 3;
+  int32 member_count = 4;
+  repeated string ioc_fingerprint = 5;
 }

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package deepmail.sandbox_url;
+
+service UrlSandbox {
+  rpc SubmitUrl(UrlSubmitRequest) returns (UrlSubmitResponse);
+  rpc GetReport(UrlReportRequest) returns (UrlReportResponse);
+  rpc GetJobStatus(JobStatusRequest) returns (JobStatusResponse);
+}
+
+message UrlSubmitRequest {
+  string url       = 1;
+  string email_id  = 2;
+  string tenant_id = 3;
+  string url_type  = 4;
+}
+
+message UrlSubmitResponse {
+  string job_id = 1;
+  string status = 2;
+}
+
+message UrlReportRequest {
+  string job_id = 1;
+}
+
+message UrlReportResponse {
+  string job_id         = 1;
+  string original_url   = 2;
+  string final_url      = 3;
+  string threat_class   = 4;
+  float  threat_score   = 5;
+  bool   has_login_form = 6;
+  int32  redirect_count = 7;
+}
+
+message JobStatusRequest {
+  string job_id = 1;
+}
+
+message JobStatusResponse {
+  string job_id = 1;
+  string status = 2;
+}

@@ -111,6 +111,12 @@ pub mod proto {
         tonic::include_proto!("deepmail.sandbox");
     }
 
+    /// URL sandbox analysis types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod sandbox_url {
+        tonic::include_proto!("deepmail.sandbox_url");
+    }
+
     /// Threat scoring types.
     #[allow(missing_docs, clippy::all)]
     pub mod scoring {

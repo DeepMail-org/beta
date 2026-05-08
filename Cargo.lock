@@ -1465,10 +1465,24 @@ name = "deepmail-intel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-nats",
+ "base64 0.22.1",
+ "chrono",
+ "config",
  "deepmail-common",
+ "futures",
+ "prost",
+ "redis",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 1.0.69",
  "tokio",
+ "tonic",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

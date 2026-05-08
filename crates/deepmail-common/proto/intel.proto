@@ -2,58 +2,47 @@ syntax = "proto3";
 
 package deepmail.intel;
 
-import "google/protobuf/timestamp.proto";
-
-service ThreatIntel {
-  rpc EnrichIndicator (EnrichRequest)      returns (EnrichResult);
-  rpc EnrichBatch     (EnrichBatchRequest) returns (EnrichBatchResult);
+service IntelEnricher {
+  rpc EnrichIoc(EnrichIocRequest) returns (EnrichIocResponse);
+  rpc EnrichBatch(EnrichBatchRequest) returns (EnrichBatchResponse);
+  rpc GetCachedResult(GetCachedRequest) returns (EnrichIocResponse);
+  rpc GetProviderStatus(ProviderStatusRequest) returns (ProviderStatusResponse);
 }
 
-enum IndicatorType {
-  IP          = 0;
-  URL         = 1;
-  DOMAIN      = 2;
-  HASH_MD5    = 3;
-  HASH_SHA256 = 4;
+message EnrichIocRequest {
+  string ioc_value = 1;
+  string ioc_type = 2;
+  repeated string providers = 3;
+  bool force_refresh = 4;
 }
 
-enum IntelVerdict {
-  VERDICT_UNKNOWN = 0;
-  CLEAN           = 1;
-  SUSPICIOUS      = 2;
-  MALICIOUS       = 3;
-}
-
-message EnrichRequest {
-  string        indicator       = 1;
-  IndicatorType indicator_type  = 2;
-}
-
-message EnrichResult {
-  string        indicator                       = 1;
-  IndicatorType indicator_type                  = 2;
-  IntelVerdict  aggregated_verdict              = 3;
-  float         max_confidence                  = 4;
-  map<string, ProviderResult> provider_verdicts = 5;
-  bool          from_cache                      = 6;
-  google.protobuf.Timestamp expires_at          = 7;
-}
-
-message ProviderResult {
-  bool   malicious        = 1;
-  bool   suspicious       = 2;
-  float  confidence       = 3;
-  int32  detection_count  = 4;
-  int32  total_engines    = 5;
-  repeated string categories = 6;
-  repeated string tags       = 7;
-  string raw_verdict      = 8;
+message EnrichIocResponse {
+  string ioc_value = 1;
+  string ioc_type = 2;
+  map<string, string> provider_results_json = 3;
+  float max_score = 4;
+  bool is_malicious = 5;
+  int64 cached_at = 6;
 }
 
 message EnrichBatchRequest {
-  repeated EnrichRequest requests = 1;
+  repeated EnrichIocRequest iocs = 1;
 }
 
-message EnrichBatchResult {
-  repeated EnrichResult results = 1;
+message EnrichBatchResponse {
+  repeated EnrichIocResponse results = 1;
+}
+
+message GetCachedRequest {
+  string ioc_value = 1;
+  string ioc_type = 2;
+  string provider = 3;
+}
+
+message ProviderStatusRequest {
+  string provider = 1;
+}
+
+message ProviderStatusResponse {
+  map<string, string> statuses = 1;
 }

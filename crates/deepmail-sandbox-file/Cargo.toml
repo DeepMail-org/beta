@@ -4,7 +4,7 @@ version.workspace     = true
 edition.workspace     = true
 authors.workspace     = true
 license.workspace     = true
-description = "DeepMail service: sandbox-file"
+description = "DeepMail service: static file analysis sandbox"
 
 [[bin]]
 name = "deepmail-sandbox-file"
@@ -14,6 +14,29 @@ path = "src/main.rs"
 deepmail-common = { path = "../deepmail-common" }
 
 tokio.workspace              = true
+tonic.workspace              = true
+prost.workspace              = true
+sqlx.workspace               = true
+async-nats.workspace         = true
+serde.workspace              = true
+serde_json.workspace         = true
 tracing.workspace            = true
 tracing-subscriber.workspace = true
+thiserror.workspace          = true
 anyhow.workspace             = true
+uuid.workspace               = true
+chrono.workspace             = true
+futures.workspace            = true
+
+once_cell = "1"
+regex = "1"
+which = "8"
+tempfile = "3"
+tonic-health = "0.11"
+aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1"
+yara-x = "1"
+sha2 = "0.10"
+md-5 = "0.10"
+hex = "0.4"
+tokio-stream = { version = "0.1", features = ["net"] }

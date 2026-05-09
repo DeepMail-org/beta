@@ -111,6 +111,12 @@ pub mod proto {
         tonic::include_proto!("deepmail.sandbox");
     }
 
+    /// File sandbox analysis types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod sandbox_file {
+        tonic::include_proto!("deepmail.sandbox_file");
+    }
+
     /// URL sandbox analysis types.
     #[allow(missing_docs, clippy::all)]
     pub mod sandbox_url {

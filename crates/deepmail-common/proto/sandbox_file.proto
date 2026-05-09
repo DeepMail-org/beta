@@ -1,0 +1,37 @@
+syntax = "proto3";
+package deepmail.sandbox_file;
+
+service FileSandbox {
+  rpc AnalyzeFile(FileAnalyzeRequest) returns (FileAnalyzeResponse);
+  rpc GetReport(FileReportRequest) returns (FileReportResponse);
+}
+
+message FileAnalyzeRequest {
+  string attachment_id = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+  string s3_key = 4;
+  string filename = 5;
+}
+
+message FileAnalyzeResponse {
+  string report_id = 1;
+  string threat_verdict = 2;
+  float threat_score = 3;
+  bool has_macros = 4;
+  bool is_pe = 5;
+  repeated string yara_matches = 6;
+}
+
+message FileReportRequest {
+  string attachment_id = 1;
+}
+
+message FileReportResponse {
+  string report_id = 1;
+  string attachment_id = 2;
+  string threat_verdict = 3;
+  float threat_score = 4;
+  repeated string yara_matches = 5;
+  repeated string analysis_notes = 6;
+}

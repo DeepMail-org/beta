@@ -1,0 +1,51 @@
+syntax = "proto3";
+package deepmail.sandbox_dynamic;
+
+service DynamicSandbox {
+  rpc AnalyzeFile(DynamicAnalyzeRequest) returns (DynamicAnalyzeResponse);
+  rpc GetReport(DynamicReportRequest) returns (DynamicReportResponse);
+  rpc GetJobStatus(DynamicJobStatusRequest) returns (DynamicJobStatusResponse);
+}
+
+message DynamicAnalyzeRequest {
+  string attachment_id = 1;
+  string email_id = 2;
+  string tenant_id = 3;
+  string s3_key = 4;
+  string filename = 5;
+  string sha256_hash = 6;
+}
+
+message DynamicAnalyzeResponse {
+  string job_id = 1;
+  string status = 2;
+  string dynamic_verdict = 3;
+  float dynamic_score = 4;
+  bool cape_unavailable = 5;
+}
+
+message DynamicReportRequest {
+  string attachment_id = 1;
+}
+
+message DynamicReportResponse {
+  string report_id = 1;
+  string attachment_id = 2;
+  string dynamic_verdict = 3;
+  float dynamic_score = 4;
+  repeated string network_hosts = 5;
+  repeated string dns_requests = 6;
+  repeated string persistence_indicators = 7;
+  repeated string c2_indicators = 8;
+  repeated string analysis_notes = 9;
+  bool cape_unavailable = 10;
+}
+
+message DynamicJobStatusRequest {
+  string job_id = 1;
+}
+
+message DynamicJobStatusResponse {
+  string job_id = 1;
+  string status = 2;
+}

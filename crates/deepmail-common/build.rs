@@ -25,6 +25,7 @@ const PROTO_FILES: &[&str] = &[
     "proto/notify.proto",
     "proto/report.proto",
     "proto/sandbox.proto",
+    "proto/sandbox_dynamic.proto",
     "proto/sandbox_file.proto",
     "proto/sandbox_url.proto",
     "proto/scoring.proto",

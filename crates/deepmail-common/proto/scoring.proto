@@ -1,57 +1,41 @@
 syntax = "proto3";
+package scoring;
 
-package deepmail.scoring;
-
-import "google/protobuf/timestamp.proto";
-
-service ScoringService {
-  rpc GetScore       (GetScoreRequest)  returns (ThreatScore);
-  rpc SubmitFeedback (FeedbackRequest)  returns (FeedbackResponse);
+service ThreatScorer {
+  rpc ComputeScore(ComputeScoreRequest) returns (ComputeScoreResponse);
+  rpc GetScore(GetScoreRequest) returns (ComputeScoreResponse);
+  rpc SubmitFeedback(FeedbackRequest) returns (FeedbackResponse);
 }
 
-enum Severity {
-  CLEAN    = 0;
-  LOW      = 1;
-  MEDIUM   = 2;
-  HIGH     = 3;
-  CRITICAL = 4;
+message ComputeScoreRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  bool force_recompute = 3;
+}
+
+message ComputeScoreResponse {
+  string email_id = 1;
+  float final_score = 2;
+  string final_verdict = 3;
+  int32 signals_available = 4;
+  map<string, float> signal_scores = 5;
+  bool is_final = 6;
 }
 
 message GetScoreRequest {
   string email_id = 1;
-}
-
-message ThreatScore {
-  string   email_id          = 1;
-  float    final_score       = 2;
-  Severity severity          = 3;
-  float    confidence        = 4;
-  repeated ScoreSignal signals = 5;
-  float    ml_score          = 6;
-  string   ml_model_version  = 7;
-  google.protobuf.Timestamp scored_at = 8;
-}
-
-message ScoreSignal {
-  string signal_name    = 1;
-  string signal_source  = 2;
-  float  value          = 3;
-  float  weight         = 4;
-  float  contribution   = 5;
-  string evidence       = 6;
+  string tenant_id = 2;
 }
 
 message FeedbackRequest {
-  string   email_id            = 1;
-  string   analyst_user_id     = 2;
-  Severity original_severity   = 3;
-  Severity corrected_severity  = 4;
-  float    original_score      = 5;
-  float    corrected_score     = 6;
-  string   notes               = 7;
+  string email_id = 1;
+  string tenant_id = 2;
+  string analyst_id = 3;
+  string correct_verdict = 4;
+  string feedback_notes = 5;
 }
 
 message FeedbackResponse {
-  bool   accepted     = 1;
-  string feedback_id  = 2;
+  string feedback_id = 1;
+  bool accepted = 2;
 }

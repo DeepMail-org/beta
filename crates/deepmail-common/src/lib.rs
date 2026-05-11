@@ -132,7 +132,7 @@ pub mod proto {
     /// Threat scoring types.
     #[allow(missing_docs, clippy::all)]
     pub mod scoring {
-        tonic::include_proto!("deepmail.scoring");
+        tonic::include_proto!("scoring");
     }
 
     /// Raw FileDescriptorSet bytes for all DeepMail services. Useful for

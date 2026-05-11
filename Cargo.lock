@@ -2148,10 +2148,21 @@ name = "deepmail-scoring"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-nats",
+ "chrono",
  "deepmail-common",
+ "futures",
+ "prost",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 1.0.69",
  "tokio",
+ "tonic",
+ "tonic-health",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

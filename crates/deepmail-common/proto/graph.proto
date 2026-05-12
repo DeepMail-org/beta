@@ -3,70 +3,83 @@ syntax = "proto3";
 package deepmail.graph;
 
 service GraphService {
-  rpc BuildEmailGraph (BuildGraphRequest) returns (BuildGraphResponse);
-  rpc GetEmailGraph   (GetGraphRequest)   returns (GraphData);
-  rpc FindC2Paths     (C2PathRequest)     returns (C2PathResponse);
+  rpc SyncEmail(GraphSyncRequest) returns (GraphSyncResponse);
+  rpc QueryRelated(GraphQueryRequest) returns (GraphQueryResponse);
+  rpc FindC2Paths(C2PathRequest) returns (C2PathResponse);
+  rpc FindShadowInfra(ShadowInfraRequest) returns (ShadowInfraResponse);
+  rpc GetCampaignGraph(CampaignGraphRequest) returns (CampaignGraphResponse);
 }
 
-message BuildGraphRequest {
-  string   email_id          = 1;
-  string   tenant_id         = 2;
-  repeated GraphNode nodes   = 3;
-  repeated GraphEdge edges   = 4;
-}
-
-message BuildGraphResponse {
-  bool   success         = 1;
-  int32  nodes_created   = 2;
-  int32  edges_created   = 3;
-  string error           = 4;
-}
-
-message GetGraphRequest {
-  string email_id  = 1;
+message GraphSyncRequest {
+  string email_id = 1;
   string tenant_id = 2;
 }
 
-message GraphData {
-  repeated GraphNode    nodes     = 1;
-  repeated GraphEdge    edges     = 2;
-  repeated CampaignInfo campaigns = 3;
+message GraphSyncResponse {
+  string email_id = 1;
+  int32 nodes_created = 2;
+  int32 edges_created = 3;
+  string status = 4;
+}
+
+message GraphQueryRequest {
+  string ioc_value = 1;
+  string ioc_type = 2;
+  int32 depth = 3;
+  string tenant_id = 4;
+}
+
+message GraphQueryResponse {
+  repeated GraphNode nodes = 1;
+  repeated GraphEdge edges = 2;
 }
 
 message GraphNode {
-  string id          = 1;
-  string node_type   = 2;
-  string label       = 3;
-  float  risk_score  = 4;
+  string id = 1;
+  string node_type = 2;
+  string value = 3;
+  float threat_score = 4;
   map<string, string> properties = 5;
 }
 
 message GraphEdge {
-  string source_id    = 1;
-  string target_id    = 2;
-  string relationship = 3;
-  float  weight       = 4;
-  map<string, string> properties = 5;
-}
-
-message CampaignInfo {
-  string campaign_id = 1;
-  string name        = 2;
-  float  confidence  = 3;
-  int32  email_count = 4;
+  string source_id = 1;
+  string target_id = 2;
+  string relation_type = 3;
+  float confidence = 4;
 }
 
 message C2PathRequest {
   string email_id = 1;
+  string tenant_id = 2;
 }
 
 message C2PathResponse {
-  repeated C2Path paths = 1;
+  repeated GraphPath paths = 1;
 }
 
-message C2Path {
-  repeated string hop_ips     = 1;
-  float    confidence         = 2;
-  string   malware_family     = 3;
-  repeated string mitre_ttps  = 4;
+message GraphPath {
+  repeated GraphNode nodes = 1;
+  string path_type = 2;
+}
+
+message ShadowInfraRequest {
+  string ip_value = 1;
+  string tenant_id = 2;
+}
+
+message ShadowInfraResponse {
+  repeated GraphNode related_nodes = 1;
+  string summary = 2;
+}
+
+message CampaignGraphRequest {
+  string campaign_id = 1;
+  string tenant_id = 2;
+}
+
+message CampaignGraphResponse {
+  repeated GraphNode nodes = 1;
+  repeated GraphEdge edges = 2;
+  int32 email_count = 3;
 }

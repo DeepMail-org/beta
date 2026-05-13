@@ -3,36 +3,47 @@ syntax = "proto3";
 package deepmail.notify;
 
 service NotifyService {
-  rpc SendAlert         (AlertRequest)    returns (AlertResponse);
-  rpc BroadcastToTenant (TenantBroadcast) returns (AlertResponse);
+  rpc SendNotification (SendNotificationRequest)  returns (SendNotificationResponse);
+  rpc GetConfig        (GetConfigRequest)          returns (NotifyConfigResponse);
+  rpc UpsertConfig     (UpsertConfigRequest)       returns (NotifyConfigResponse);
 }
 
-enum AlertSeverity {
-  INFO     = 0;
-  LOW      = 1;
-  MEDIUM   = 2;
-  HIGH     = 3;
-  CRITICAL = 4;
+message SendNotificationRequest {
+  string email_id   = 1;
+  string tenant_id  = 2;
+  string event_type = 3;
+  string verdict    = 4;
+  float  score      = 5;
+  string details    = 6;
 }
 
-message AlertRequest {
-  string        tenant_id = 1;
-  string        email_id  = 2;
-  AlertSeverity severity  = 3;
-  string        title     = 4;
-  string        body      = 5;
-  map<string, string> metadata = 6;
+message SendNotificationResponse {
+  bool   delivered          = 1;
+  uint32 channels_notified  = 2;
+  bool   websocket_sent     = 3;
+  bool   email_sent         = 4;
+  bool   webhook_sent       = 5;
 }
 
-message AlertResponse {
-  bool     delivered          = 1;
-  uint32   channels_notified  = 2;
-  repeated string errors      = 3;
+message GetConfigRequest {
+  string tenant_id = 1;
 }
 
-message TenantBroadcast {
-  string        tenant_id    = 1;
-  string        event_type   = 2;
-  string        payload_json = 3;
-  AlertSeverity severity     = 4;
+message UpsertConfigRequest {
+  string tenant_id      = 1;
+  string webhook_url    = 2;
+  string webhook_secret = 3;
+  bool   smtp_enabled   = 4;
+  string min_severity   = 5;
+}
+
+message NotifyConfigResponse {
+  string config_id      = 1;
+  string tenant_id      = 2;
+  string webhook_url    = 3;
+  bool   webhook_active = 4;
+  bool   smtp_enabled   = 5;
+  string min_severity   = 6;
+  string created_at     = 7;
+  string updated_at     = 8;
 }

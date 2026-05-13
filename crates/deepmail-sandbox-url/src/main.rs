@@ -62,17 +62,14 @@ async fn main() -> anyhow::Result<()> {
             Arc::new(d)
         }
         Err(e) => {
-            tracing::error!("Docker connection failed: {} — sandbox jobs will fail", e);
-            // Still create a client — it will fail at job time
-            Arc::new(Docker::connect_with_local_defaults()
-                .unwrap_or_else(|_| {
-                    // Fallback: try with explicit socket path
-                    Docker::connect_with_socket(
-                        &cfg.docker_sock,
-                        120,
-                        bollard::API_DEFAULT_VERSION,
-                    ).expect("cannot connect to Docker at all")
-                }))
+            tracing::error!("Docker connection failed: {}", e);
+            let fallback = Docker::connect_with_socket(
+                &cfg.docker_sock,
+                120,
+                bollard::API_DEFAULT_VERSION,
+            )
+            .map_err(|err| anyhow::anyhow!("cannot connect to Docker: {err}"))?;
+            Arc::new(fallback)
         }
     };
 

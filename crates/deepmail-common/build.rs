@@ -29,18 +29,20 @@ const PROTO_FILES: &[&str] = &[
     "proto/sandbox_file.proto",
     "proto/sandbox_url.proto",
     "proto/scoring.proto",
+    "proto/tenant.proto",
+    "proto/otp_smtp.proto",
 ];
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     if which_protoc().is_none() {
-        // Surface a clear, actionable error at build time rather than letting
-        // tonic-build emit a less obvious failure deep in its prost invocation.
-        panic!(
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
             "protoc not found in PATH. Install Protocol Buffers compiler:\n  \
              - Debian/Ubuntu: apt-get install -y protobuf-compiler\n  \
              - macOS (Homebrew): brew install protobuf\n  \
-             - Arch Linux: pacman -S protobuf"
-        );
+             - Arch Linux: pacman -S protobuf",
+        )
+        .into());
     }
 
     let out_dir = PathBuf::from(std::env::var("OUT_DIR")?);

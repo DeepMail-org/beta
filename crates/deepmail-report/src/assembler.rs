@@ -281,7 +281,10 @@ async fn fetch_scoring(pool: &PgPool, email_id: Uuid) -> (f32, String, i32) {
     .bind(email_id)
     .fetch_optional(pool)
     .await
-    .unwrap_or(None);
+    .unwrap_or_else(|e| {
+        tracing::warn!(error = %e, %email_id, "failed to fetch threat_scores");
+        None
+    });
 
     row.unwrap_or((0.0, "CLEAN".to_string(), 0))
 }
@@ -534,7 +537,10 @@ async fn fetch_ioc_analysis(pool: &PgPool, email_id: Uuid) -> Option<IocAnalysis
     .bind(email_id)
     .fetch_optional(pool)
     .await
-    .unwrap_or(None);
+    .unwrap_or_else(|e| {
+        tracing::warn!(error = %e, %email_id, "failed to fetch campaign data");
+        None
+    });
 
     let (campaign_id, campaign_name, campaign_status) = match campaign {
         Some((id, name, status)) => (Some(id.to_string()), Some(name), Some(status)),

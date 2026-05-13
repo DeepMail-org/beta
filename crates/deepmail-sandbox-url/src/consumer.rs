@@ -84,7 +84,13 @@ async fn consumer_loop(
             }
         };
 
-        let permit = semaphore.clone().acquire_owned().await.unwrap();
+        let permit = match semaphore.clone().acquire_owned().await {
+            Ok(p) => p,
+            Err(_) => {
+                tracing::info!("semaphore closed, shutting down consumer");
+                break;
+            }
+        };
         let ctx = Arc::clone(&ctx);
 
         tokio::spawn(async move {

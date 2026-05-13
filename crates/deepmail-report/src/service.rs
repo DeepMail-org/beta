@@ -74,7 +74,7 @@ impl ReportService for ReportGrpcService {
             .bind(email_id)
             .fetch_optional(self.ctx.pools.scoring.as_ref())
             .await
-            .unwrap_or(None);
+            .unwrap_or_else(|e| { tracing::warn!(error = %e, "scoring query failed"); None });
 
             let (score, verdict) = scoring.unwrap_or((0.0, "CLEAN".to_string()));
 

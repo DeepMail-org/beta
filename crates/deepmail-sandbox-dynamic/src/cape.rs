@@ -25,17 +25,17 @@ pub struct CapeClient {
 
 impl CapeClient {
     /// Create a new CAPEv2 client. base_url trailing slash is stripped.
-    pub fn new(base_url: String, api_token: String) -> Self {
+    pub fn new(base_url: String, api_token: String) -> Result<Self, DynamicError> {
         let client = reqwest::Client::builder()
             .timeout(Duration::from_secs(30))
             .pool_idle_timeout(Duration::from_secs(60))
             .build()
-            .expect("failed to build reqwest client");
-        Self {
+            .map_err(|e| DynamicError::Internal(format!("failed to build reqwest client: {e}")))?;
+        Ok(Self {
             client: Arc::new(client),
             base_url: base_url.trim_end_matches('/').to_string(),
             api_token,
-        }
+        })
     }
 
     /// Returns true if CAPEv2 is configured (URL and token are non-empty).

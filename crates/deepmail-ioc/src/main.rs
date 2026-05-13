@@ -36,7 +36,8 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("deepmail-ioc starting");
 
     // a. Load config
-    let cfg = IocConfig::load().expect("failed to load config");
+    let cfg = IocConfig::load()
+        .map_err(|e| anyhow::anyhow!("failed to load config: {e}"))?;
 
     // b. Connect main pool (deepmail_ioc)
     let main_pool = PgPoolOptions::new()

@@ -130,8 +130,8 @@ pub fn extract_base64_urls(text: &str) -> Vec<String> {
                     urls.push(decoded);
                 } else if decoded.contains("href=") || decoded.contains("<a ") {
                     // Extract URLs from decoded HTML fragment
-                    let re = Regex::new(r#"https?://[^\s"'<>]+"#).unwrap();
-                    for m in re.find_iter(&decoded) {
+                    static HREF_URL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"https?://[^\s"'<>]+"#).unwrap());
+                    for m in HREF_URL_RE.find_iter(&decoded) {
                         urls.push(m.as_str().to_string());
                     }
                 }

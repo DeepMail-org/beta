@@ -246,7 +246,7 @@ async fn fetch_email_score(ctx: &SyncCtx, email_id: Uuid) -> HashMap<String, Str
     .bind(email_id)
     .fetch_optional(ctx.scoring_pool.as_ref())
     .await
-    .unwrap_or(None);
+    .unwrap_or_else(|e| { tracing::warn!(error = %e, "cross-service query failed"); None });
 
     if let Some((score, verdict)) = row {
         props.insert("threat_score".to_string(), score.to_string());

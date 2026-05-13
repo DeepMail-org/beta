@@ -8,8 +8,13 @@ use uuid::Uuid;
 type HmacSha256 = Hmac<Sha256>;
 
 pub fn sign_payload(secret: &str, body: &[u8]) -> String {
-    let mut mac =
-        HmacSha256::new_from_slice(secret.as_bytes()).expect("HMAC accepts any key length");
+    let mut mac = match HmacSha256::new_from_slice(secret.as_bytes()) {
+        Ok(m) => m,
+        Err(e) => {
+            tracing::error!(error = %e, "failed to initialize webhook signer");
+            return String::new();
+        }
+    };
     mac.update(body);
     let result = mac.finalize();
     format!("sha256={}", hex::encode(result.into_bytes()))

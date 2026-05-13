@@ -63,7 +63,7 @@ async fn main() -> anyhow::Result<()> {
     let cape = Arc::new(cape::CapeClient::new(
         config.cape_api_url.clone(),
         config.cape_api_token.clone(),
-    ));
+    )?);
 
     if cape.is_configured() {
         tracing::info!(url = %config.cape_api_url, "CAPEv2 configured");

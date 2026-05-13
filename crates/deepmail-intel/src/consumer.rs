@@ -22,10 +22,13 @@ pub async fn run_consumer(
 
     tracing::info!("intel-enricher NATS consumer started");
 
-    let mut messages = consumer
-        .messages()
-        .await
-        .expect("failed to get message stream");
+    let mut messages = match consumer.messages().await {
+        Ok(stream) => stream,
+        Err(e) => {
+            tracing::error!(error = %e, "failed to get message stream");
+            return;
+        }
+    };
 
     while let Some(msg_result) = messages.next().await {
         let msg = match msg_result {

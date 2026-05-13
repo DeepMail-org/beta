@@ -49,9 +49,8 @@ pub struct DynamicFindings {
     pub cape_unavailable: bool,
 }
 
-static C2_PATH_RE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"/(gate|panel|tasks|upload|bot|check.?in|report|cmd|config)\.php")
-        .expect("c2 regex")
+static C2_PATH_RE: Lazy<Option<Regex>> = Lazy::new(|| {
+    Regex::new(r"/(gate|panel|tasks|upload|bot|check.?in|report|cmd|config)\.php").ok()
 });
 
 static C2_PATH_KEYWORDS: &[&str] = &[
@@ -231,7 +230,10 @@ pub fn parse_cape_report(report: &serde_json::Value) -> DynamicFindings {
 
     // From HTTP requests
     for req in &findings.http_requests {
-        if C2_PATH_RE.is_match(&req.uri)
+        if C2_PATH_RE
+            .as_ref()
+            .map(|re| re.is_match(&req.uri))
+            .unwrap_or(false)
             || C2_PATH_KEYWORDS.iter().any(|kw| req.uri.contains(kw))
         {
             if c2_set.insert(req.uri.clone()) && findings.c2_indicators.len() < 20 {

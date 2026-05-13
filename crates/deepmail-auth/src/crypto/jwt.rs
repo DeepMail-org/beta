@@ -21,6 +21,9 @@ pub struct Claims {
     pub tenant_id: String,
     /// User's RBAC role: "owner" | "admin" | "analyst" | "viewer".
     pub role: String,
+    /// User email (optional, included for gateway convenience).
+    #[serde(default)]
+    pub email: Option<String>,
     /// Expiration timestamp (Unix epoch seconds).
     pub exp: usize,
     /// Issued-at timestamp (Unix epoch seconds).
@@ -71,6 +74,7 @@ impl JwtManager {
             sub: user_id.to_string(),
             tenant_id: tenant_id.to_string(),
             role: role.to_string(),
+            email: None,
             exp,
             iat: now,
             jti: Uuid::new_v4().to_string(),

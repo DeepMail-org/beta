@@ -17,3 +17,9 @@ tokio.workspace              = true
 tracing.workspace            = true
 tracing-subscriber.workspace = true
 anyhow.workspace             = true
+tonic.workspace              = true
+serde.workspace              = true
+thiserror.workspace          = true
+config.workspace             = true
+uuid.workspace               = true
+lettre = { version = "0.11", default-features = false, features = ["tokio1-rustls-tls", "smtp-transport", "builder", "pool", "hostname"] }

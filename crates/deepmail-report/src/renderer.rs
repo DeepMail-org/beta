@@ -236,8 +236,54 @@ fn write_signal_table(html: &mut String, report: &ReportData) {
     let _ = write!(html, "</table></div></div>\n");
 }
 
-fn section_score(_report: &ReportData, _name: &str) -> f32 {
-    0.0
+fn section_score(report: &ReportData, name: &str) -> f32 {
+    match name {
+        "header" => report.header_analysis.as_ref().map(|h| {
+            let mut s: f32 = 0.1;
+            if h.return_path_mismatch { s += 0.3; }
+            if h.reply_to_mismatch { s += 0.2; }
+            if h.spf_result.as_deref() == Some("fail") { s += 0.2; }
+            if h.dmarc_result.as_deref() == Some("fail") { s += 0.2; }
+            s.min(1.0)
+        }).unwrap_or(0.0),
+        "geo" => report.geo_analysis.as_ref().map(|g| {
+            match g.overall_risk.as_str() {
+                "high" => 0.8,
+                "medium" => 0.5,
+                "low" => 0.2,
+                _ => 0.1,
+            }
+        }).unwrap_or(0.0),
+        "ioc" => report.ioc_analysis.as_ref().map(|i| {
+            if i.malicious_count > 0 { 0.9 }
+            else if i.suspicious_count > 0 { 0.5 }
+            else { 0.1 }
+        }).unwrap_or(0.0),
+        "homograph" => report.homograph_analysis.as_ref().map(|h| {
+            match h.overall_risk.as_str() {
+                "high" => 0.9,
+                "medium" => 0.5,
+                "low" => 0.2,
+                _ => 0.0,
+            }
+        }).unwrap_or(0.0),
+        "sandbox_url" => report.sandbox_url.as_ref().map(|s| {
+            if s.malicious_count > 0 { 0.9 }
+            else if s.jobs_run > 0 { 0.1 }
+            else { 0.0 }
+        }).unwrap_or(0.0),
+        "sandbox_file" => report.sandbox_file.as_ref().map(|s| {
+            if s.malicious_count > 0 { 0.9 }
+            else if s.attachments_analyzed > 0 { 0.1 }
+            else { 0.0 }
+        }).unwrap_or(0.0),
+        "sandbox_dynamic" => report.sandbox_dynamic.as_ref().map(|s| {
+            if s.malicious_count > 0 { 0.95 }
+            else if s.attachments_analyzed > 0 { 0.1 }
+            else { 0.0 }
+        }).unwrap_or(0.0),
+        _ => 0.0,
+    }
 }
 
 fn write_header_section(html: &mut String, h: &crate::assembler::HeaderAnalysisData) {

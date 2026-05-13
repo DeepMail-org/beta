@@ -99,6 +99,12 @@ pub mod proto {
         tonic::include_proto!("deepmail.notify");
     }
 
+    /// OTP SMTP delivery service types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod otp_smtp {
+        tonic::include_proto!("deepmail.otp_smtp");
+    }
+
     /// Report generation types.
     #[allow(missing_docs, clippy::all)]
     pub mod report {
@@ -133,6 +139,12 @@ pub mod proto {
     #[allow(missing_docs, clippy::all)]
     pub mod scoring {
         tonic::include_proto!("scoring");
+    }
+
+    /// Tenant management types.
+    #[allow(missing_docs, clippy::all)]
+    pub mod tenant {
+        tonic::include_proto!("deepmail.tenant");
     }
 
     /// Raw FileDescriptorSet bytes for all DeepMail services. Useful for

@@ -2,6 +2,7 @@
 
 use std::sync::Arc;
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -341,8 +342,8 @@ async fn fetch_email_body(
 
 /// Extract sender domain from the From header value.
 fn extract_sender_domain(from_header: &str) -> String {
-    let re = Regex::new(r"@([\w.\-]+)").unwrap();
-    re.captures(from_header)
+    static DOMAIN_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"@([\w.\-]+)").unwrap());
+    DOMAIN_RE.captures(from_header)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_lowercase())
         .unwrap_or_default()

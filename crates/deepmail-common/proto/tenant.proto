@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package deepmail.tenant;
+
+service TenantService {
+  rpc GetTenant    (GetTenantRequest)    returns (TenantResponse);
+  rpc InviteMember (InviteMemberRequest) returns (InviteMemberResponse);
+}
+
+message GetTenantRequest {
+  string tenant_id = 1;
+}
+
+message TenantResponse {
+  string id          = 1;
+  string name        = 2;
+  string plan        = 3;
+  int32  member_count = 4;
+  string created_at  = 5;
+}
+
+message InviteMemberRequest {
+  string tenant_id = 1;
+  string email     = 2;
+  string role      = 3;
+}
+
+message InviteMemberResponse {
+  string invite_id = 1;
+  bool   sent      = 2;
+}

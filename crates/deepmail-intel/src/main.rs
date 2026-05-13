@@ -44,7 +44,8 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("deepmail-intel starting");
 
     // a. Load config
-    let cfg = IntelConfig::load().expect("failed to load config");
+    let cfg = IntelConfig::load()
+        .map_err(|e| anyhow::anyhow!("failed to load config: {e}"))?;
 
     // b. Connect main DB pool (deepmail_intel)
     let main_pool = PgPoolOptions::new()

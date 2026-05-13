@@ -8,6 +8,10 @@ service AuthService {
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc GetUserById   (GetUserRequest)       returns (UserResponse);
   rpc RevokeToken   (RevokeTokenRequest)   returns (RevokeTokenResponse);
+  rpc Register      (RegisterRequest)      returns (RegisterResponse);
+  rpc Login         (LoginRequest)         returns (LoginResponse);
+  rpc VerifyOtp     (VerifyOtpRequest)     returns (VerifyOtpResponse);
+  rpc RefreshToken  (RefreshTokenRequest)  returns (RefreshTokenResponse);
 }
 
 message ValidateTokenRequest {
@@ -20,7 +24,8 @@ message ValidateTokenResponse {
   string tenant_id  = 3;
   string role       = 4;
   string jti        = 5;
-  google.protobuf.Timestamp expires_at = 6;
+  string email      = 6;
+  google.protobuf.Timestamp expires_at = 7;
 }
 
 message GetUserRequest {
@@ -45,4 +50,45 @@ message RevokeTokenRequest {
 
 message RevokeTokenResponse {
   bool revoked = 1;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string email    = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  string user_id = 1;
+  string message = 2;
+}
+
+message LoginRequest {
+  string email    = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  bool   otp_required  = 1;
+  string session_token = 2;
+}
+
+message VerifyOtpRequest {
+  string session_token = 1;
+  string otp_code      = 2;
+}
+
+message VerifyOtpResponse {
+  string access_token  = 1;
+  string refresh_token = 2;
+  int64  expires_in    = 3;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  int64  expires_in   = 2;
 }

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package deepmail.otp_smtp;
+
+service OtpSmtpService {
+  rpc SendOtp(SendOtpRequest) returns (SendOtpResponse);
+}
+
+message SendOtpRequest {
+  string recipient_email = 1;
+  string recipient_name = 2;
+  string otp_code = 3;
+  int64 expires_in_seconds = 4;
+  string tenant_id = 5;
+  string user_id = 6;
+}
+
+message SendOtpResponse {
+  bool accepted = 1;
+  string message_id = 2;
+  string error = 3;
+}

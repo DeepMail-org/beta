@@ -37,7 +37,8 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("deepmail-homograph starting");
 
     // a. Load config
-    let cfg = HomographConfig::load().expect("failed to load config");
+    let cfg = HomographConfig::load()
+        .map_err(|e| anyhow::anyhow!("failed to load config: {e}"))?;
 
     // b. Connect main pool (deepmail_homograph)
     let main_pool = PgPoolOptions::new()

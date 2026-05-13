@@ -11,9 +11,11 @@ use tonic::{Request, Response, Status};
 use uuid::Uuid;
 
 use deepmail_common::proto::auth::{
-    auth_service_server::AuthService, GetUserRequest, RevokeTokenRequest,
-    RevokeTokenResponse, UserResponse, ValidateTokenRequest,
-    ValidateTokenResponse,
+    auth_service_server::AuthService, GetUserRequest, LoginRequest,
+    LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest,
+    RegisterResponse, RevokeTokenRequest, RevokeTokenResponse, UserResponse,
+    ValidateTokenRequest, ValidateTokenResponse, VerifyOtpRequest,
+    VerifyOtpResponse,
 };
 
 use crate::{config::Config, crypto::jwt::JwtManager, db, error::AuthError};
@@ -60,6 +62,7 @@ impl AuthService for AuthServiceImpl {
                     tenant_id: claims.tenant_id,
                     role: claims.role,
                     jti: claims.jti,
+                    email: claims.email.unwrap_or_default(),
                     expires_at,
                 }))
             }
@@ -70,6 +73,7 @@ impl AuthService for AuthServiceImpl {
                     tenant_id: String::new(),
                     role: String::new(),
                     jti: String::new(),
+                    email: String::new(),
                     expires_at: None,
                 }))
             }
@@ -124,5 +128,45 @@ impl AuthService for AuthServiceImpl {
             "token revocation requested"
         );
         Ok(Response::new(RevokeTokenResponse { revoked: true }))
+    }
+
+    #[tracing::instrument(skip(self, _request))]
+    async fn register(
+        &self,
+        _request: Request<RegisterRequest>,
+    ) -> Result<Response<RegisterResponse>, Status> {
+        Err(Status::unimplemented(
+            "register RPC not yet wired — use direct auth HTTP",
+        ))
+    }
+
+    #[tracing::instrument(skip(self, _request))]
+    async fn login(
+        &self,
+        _request: Request<LoginRequest>,
+    ) -> Result<Response<LoginResponse>, Status> {
+        Err(Status::unimplemented(
+            "login RPC not yet wired — use direct auth HTTP",
+        ))
+    }
+
+    #[tracing::instrument(skip(self, _request))]
+    async fn verify_otp(
+        &self,
+        _request: Request<VerifyOtpRequest>,
+    ) -> Result<Response<VerifyOtpResponse>, Status> {
+        Err(Status::unimplemented(
+            "verify_otp RPC not yet wired — use direct auth HTTP",
+        ))
+    }
+
+    #[tracing::instrument(skip(self, _request))]
+    async fn refresh_token(
+        &self,
+        _request: Request<RefreshTokenRequest>,
+    ) -> Result<Response<RefreshTokenResponse>, Status> {
+        Err(Status::unimplemented(
+            "refresh_token RPC not yet wired — use direct auth HTTP",
+        ))
     }
 }

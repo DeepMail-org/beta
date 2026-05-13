@@ -238,8 +238,9 @@ async fn extract_iocs(email_id: Uuid, parser_pool: &PgPool) -> Result<HashSet<Io
         }
     }
 
-    // TODO: Extract URLs from body_analyses table once deepmail-body is available
-    // let url_rows = sqlx::query_as("SELECT extracted_urls FROM body_analyses WHERE email_id = $1")
+    // URL extraction is intentionally omitted here because this pipeline reads
+    // from the parser database only. URL enrichment is handled by deepmail-body
+    // and deepmail-ioc in their own pipelines.
 
     Ok(iocs)
 }

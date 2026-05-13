@@ -2,36 +2,41 @@ syntax = "proto3";
 
 package deepmail.report;
 
-import "google/protobuf/timestamp.proto";
-
 service ReportService {
-  rpc GenerateReport (ReportRequest) returns (ReportResponse);
-  rpc GetReport      (GetReportReq)  returns (ReportResponse);
-}
-
-enum ReportFormat {
-  PDF      = 0;
-  STIX_2_1 = 1;
-  JSON     = 2;
-  CSV      = 3;
+  rpc GenerateReport(ReportRequest) returns (ReportResponse);
+  rpc GetReport(GetReportRequest) returns (ReportResponse);
+  rpc ScheduleDigest(DigestScheduleRequest) returns (DigestScheduleResponse);
 }
 
 message ReportRequest {
-  string       email_id      = 1;
-  string       tenant_id     = 2;
-  string       requested_by  = 3;
-  ReportFormat format        = 4;
+  string email_id = 1;
+  string tenant_id = 2;
+  bool force_regenerate = 3;
 }
 
 message ReportResponse {
-  string       report_id     = 1;
-  ReportFormat format        = 2;
-  string       s3_signed_url = 3;
-  string       status        = 4;
-  google.protobuf.Timestamp expires_at = 5;
-  string       error         = 6;
+  string report_id = 1;
+  string email_id = 2;
+  string json_s3_key = 3;
+  string html_s3_key = 4;
+  string status = 5;
+  string final_verdict = 6;
+  float final_score = 7;
 }
 
-message GetReportReq {
-  string report_id = 1;
+message GetReportRequest {
+  string email_id = 1;
+  string tenant_id = 2;
+  string format = 3;
+}
+
+message DigestScheduleRequest {
+  string tenant_id = 1;
+  string frequency = 2;
+  repeated string recipient_emails = 3;
+}
+
+message DigestScheduleResponse {
+  string schedule_id = 1;
+  bool accepted = 2;
 }

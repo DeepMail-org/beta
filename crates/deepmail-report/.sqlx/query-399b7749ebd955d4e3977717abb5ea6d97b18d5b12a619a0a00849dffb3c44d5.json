@@ -1,0 +1,73 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO digest_schedules\n             (tenant_id, frequency, recipient_emails, next_send_at, is_active)\n           VALUES ($1, $2, $3, $4, true)\n           ON CONFLICT (tenant_id) DO UPDATE SET\n             frequency = EXCLUDED.frequency,\n             recipient_emails = EXCLUDED.recipient_emails,\n             next_send_at = EXCLUDED.next_send_at,\n             is_active = CASE WHEN EXCLUDED.frequency = 'never' THEN false ELSE true END,\n             updated_at = now()\n           RETURNING id, tenant_id, frequency, recipient_emails,\n                     last_sent_at, next_send_at, is_active, created_at, updated_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "tenant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "frequency",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "recipient_emails",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 4,
+        "name": "last_sent_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "next_send_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_active",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "TextArray",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "399b7749ebd955d4e3977717abb5ea6d97b18d5b12a619a0a00849dffb3c44d5"
+}

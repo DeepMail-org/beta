@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO report_exports\n             (email_id, tenant_id, report_format, s3_key, file_size_bytes, expires_at)\n           VALUES ($1, $2, $3, $4, $5, now() + INTERVAL '30 days')\n           ON CONFLICT (email_id, report_format) DO UPDATE SET\n             s3_key = EXCLUDED.s3_key,\n             file_size_bytes = EXCLUDED.file_size_bytes,\n             generated_at = now(),\n             expires_at = now() + INTERVAL '30 days'\n           RETURNING id, email_id, tenant_id, report_format,\n                     s3_key, file_size_bytes, generated_at, expires_at, created_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "email_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "tenant_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "report_format",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "s3_key",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "file_size_bytes",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "generated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "expires_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "65eb6299b6b2153e62d5d02a91cf20ced0fb08f093657f0710fe5a5e6bcaaae2"
+}

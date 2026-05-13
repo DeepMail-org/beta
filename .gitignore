@@ -33,6 +33,10 @@ frontend-beta/tsconfig.tsbuildinfo
 **/.env.*.local
 frontend-beta/.env
 frontend-beta/.env.*
+.agent/
+.claude/
+.code-review-graph/
+.sqlx/
 
 # -----------------------------------------------------------------------------
 # Cryptographic Material - Keys, Certificates, Keystores

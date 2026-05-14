@@ -14,7 +14,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
 		: "Dashboard";
 
 	return (
-		<header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 h-16 bg-background/80 backdrop-blur-xl border-b border-border">
+		<header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 h-16 bg-[#111214] border-b border-[rgba(255,200,60,0.08)]">
 			<div className="flex items-center gap-4">
 				<button 
 					onClick={onMenuClick}

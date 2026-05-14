@@ -47,7 +47,7 @@ export function Sidebar() {
 				className={`
 					fixed md:sticky top-0 left-0 h-screen z-50
 					w-64 flex-shrink-0 flex flex-col
-					bg-surface/95 backdrop-blur-xl border-r border-border
+					bg-[#0e0f11] border-r border-[rgba(255,200,60,0.08)]
 					transition-transform duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
 				`}
@@ -122,7 +122,7 @@ export function Sidebar() {
 
 				{/* Bottom Section */}
 				<motion.div 
-					className="p-3 border-t border-border space-y-1"
+					className="p-3 border-t border-[rgba(255,200,60,0.08)] space-y-1"
 					initial="hidden"
 					animate="visible"
 					variants={{

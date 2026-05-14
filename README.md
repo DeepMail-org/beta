@@ -6,7 +6,6 @@ DeepMail is a email threat intelligence platform. Users upload `.eml` or `.msg` 
 
 ![DeepMail System Architecture](docs/architecture.svg)
 
-
 ```
                                 deepmail-gateway
                                         │
@@ -23,7 +22,9 @@ DeepMail is a email threat intelligence platform. Users upload `.eml` or `.msg` 
                     │  [MinIO]                │
                     └────────────────────────
 ```
+
 ---
+
 ## Backend Services
 
 | Service                  | Protocol  | Responsibility                                             |

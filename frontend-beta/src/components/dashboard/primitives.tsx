@@ -17,9 +17,9 @@ export function Card({
 	children: ReactNode;
 }) {
 	return (
-		<section className={`glass rounded-xl border border-border overflow-hidden flex flex-col ${className}`}>
+		<section className={`liquid-glass rounded-2xl overflow-hidden flex flex-col ${className}`}>
 			{(title || actions) && (
-				<header className="px-5 py-4 border-b border-border flex items-center justify-between gap-4 bg-surface/50">
+				<header className="px-5 py-4 border-b border-[rgba(255,200,60,0.06)] flex items-center justify-between gap-4">
 					<div className="min-w-0">
 						{title && <h3 className="text-sm font-display font-semibold tracking-wide text-foreground">{title}</h3>}
 						{subtitle && (
@@ -51,20 +51,28 @@ export function StatCard({
 }) {
 	const trendColor =
 		trend === "up" ? "text-success" : trend === "down" ? "text-danger" : "text-muted";
-	const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "→";
+	const arrow = trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
 	
 	return (
-		<div className="glass rounded-xl border border-border p-5 flex flex-col justify-between hover:border-border-hover transition-colors">
-			<div className="flex items-center justify-between mb-3 text-muted">
-				<span className="text-xs font-medium uppercase tracking-wider">{label}</span>
-				{icon && <span className="text-muted">{icon}</span>}
+		<div className="glass-strong rounded-2xl p-5 flex flex-col justify-between hover:border-[rgba(255,200,60,0.18)] transition-all duration-200">
+			<div className="flex items-start justify-between mb-4">
+				{icon && (
+					<div className="w-10 h-10 rounded-xl bg-surface-3 border border-[rgba(255,200,60,0.06)] flex items-center justify-center text-muted">
+						{icon}
+					</div>
+				)}
 			</div>
-			<div className="text-3xl font-display font-semibold text-foreground tracking-tight">{value}</div>
-			{change && (
-				<div className={`text-xs mt-3 flex items-center gap-1.5 font-medium ${trendColor}`}>
-					<span aria-hidden className="text-[10px]">{arrow}</span> {change}
+			<div className="space-y-1">
+				<span className="text-xs font-medium text-muted uppercase tracking-wider">{label}</span>
+				<div className="flex items-baseline gap-3">
+					<span className="text-2xl font-display font-semibold text-foreground tracking-tight">{value}</span>
+					{change && (
+						<span className={`text-xs flex items-center gap-1 font-medium ${trendColor}`}>
+							{arrow} {change}
+						</span>
+					)}
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }
@@ -83,7 +91,7 @@ export function Btn({
 	const baseClass = "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none";
 	
 	const variantClasses = {
-		default: "bg-surface-2 text-foreground border border-border hover:bg-surface-2/80 focus:ring-border",
+		default: "bg-surface-3 text-foreground border border-[rgba(255,200,60,0.08)] hover:border-[rgba(255,200,60,0.16)] focus:ring-border",
 		accent: "bg-accent text-white hover:bg-accent/90 focus:ring-accent",
 		danger: "bg-danger text-white hover:bg-danger/90 focus:ring-danger",
 		success: "bg-success text-white hover:bg-success/90 focus:ring-success",

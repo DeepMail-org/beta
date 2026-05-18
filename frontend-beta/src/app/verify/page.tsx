@@ -11,6 +11,7 @@ import {
 	InputOTPSeparator,
 	InputOTPSlot,
 } from "@/components/ui/interfaces-input-otp";
+import { LiquidButton } from "@/components/ui/liquid-glass-button";
 
 const streakStyle = (
 	top: string,
@@ -191,10 +192,10 @@ export default function VerifyPage() {
 								)}
 							</div>
 
-							<button
+							<LiquidButton
 								type="submit"
 								disabled={isLoading || code.length !== 6}
-								className="liquid-glass group relative mt-2 h-12 w-full overflow-hidden rounded-full border border-white/20 text-[15px] font-medium text-white transition-all duration-300 hover:border-white/35 hover:bg-white/8 hover:shadow-[0_0_32px_rgba(255,255,255,0.16)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+								className="mt-2 h-12 w-full rounded-full text-[15px] font-medium text-white"
 							>
 								{isLoading ? (
 									<span className="flex items-center justify-center gap-2">
@@ -218,10 +219,10 @@ export default function VerifyPage() {
 								) : (
 									<span className="flex items-center justify-center gap-2">
 										Verify & continue
-										<ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+										<ArrowUpRight className="h-4 w-4" />
 									</span>
 								)}
-							</button>
+							</LiquidButton>
 						</form>
 
 						<div className="mt-6 flex items-center justify-center gap-2 text-xs text-white/35">

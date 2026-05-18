@@ -240,11 +240,12 @@ const SkeletonFour = () => {
 				aria-hidden
 				className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-linear-to-t from-black/90 via-black/40 to-transparent"
 			/>
-			{/* Globe — sized larger than tile, offset so only the right corner peeks in */}
+			{/* Globe — centered in tile */}
 			<div
-				className="pointer-events-none absolute -bottom-28 -right-20 h-md w-md md:-bottom-32 md:-right-24 md:h-lg md:w-lg"
+				className="pointer-events-none absolute inset-0 flex items-center justify-center"
 				aria-hidden
 			>
+				<div className="h-[110%] w-[110%]">
 				<GlobePulse
 					markers={[
 						{ id: "lon", location: [51.51, -0.13], delay: 0 },
@@ -260,6 +261,7 @@ const SkeletonFour = () => {
 					mapBrightness={10}
 					interactive={false}
 				/>
+				</div>
 			</div>
 		</div>
 	);

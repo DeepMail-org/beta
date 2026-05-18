@@ -132,10 +132,18 @@ const STYLES = `
 // -------------------------------------------------------------------------
 // 2. FOOTER COLUMN HELPER
 // -------------------------------------------------------------------------
-function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+function FooterColumn({
+	title,
+	links,
+}: {
+	title: string;
+	links: { label: string; href: string }[];
+}) {
 	return (
 		<div className="flex flex-col gap-3">
-			<p className="text-xs font-semibold tracking-widest uppercase text-foreground/40">{title}</p>
+			<p className="text-xs font-semibold tracking-widest uppercase text-foreground/40">
+				{title}
+			</p>
 			<ul className="flex flex-col gap-2.5">
 				{links.map(({ label, href }) => (
 					<li key={label}>
@@ -356,47 +364,68 @@ export function CinematicFooter() {
 						<div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-6 pb-10 border-b border-foreground/6">
 							{/* Brand column */}
 							<div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-								<a href="/" className="flex items-center gap-2.5 w-fit group">
+								<a
+									href="/"
+									className="flex items-center gap-2.5 w-fit group"
+								>
 									<div className="w-9 h-9 rounded-xl flex items-center justify-center bg-foreground/8 border border-foreground/10 group-hover:border-foreground/20 transition-colors">
-										<span className="font-display font-bold text-foreground text-[15px]">D</span>
+										<span className="font-display font-bold text-foreground text-[15px]">
+											D
+										</span>
 									</div>
-									<span className="font-display font-semibold text-[16px] text-foreground/90">DeepMail</span>
+									<span className="font-display font-semibold text-[16px] text-foreground/90">
+										DeepMail
+									</span>
 								</a>
 								<p className="text-xs text-muted-foreground leading-relaxed max-w-40">
-									© {new Date().getFullYear()} DeepMail.<br />All rights reserved.
+									© {new Date().getFullYear()} DeepMail.
+									<br />
+									All rights reserved.
 								</p>
 							</div>
 
 							{/* Pages */}
-							<FooterColumn title="Pages" links={[
-								{ label: "Home", href: "/" },
-								{ label: "Analysis", href: "/analysis" },
-								{ label: "Reports", href: "/reports" },
-								{ label: "Upload", href: "/upload" },
-								{ label: "Settings", href: "/settings" },
-							]} />
+							<FooterColumn
+								title="Pages"
+								links={[
+									{ label: "Home", href: "/" },
+									{ label: "Analysis", href: "/analysis" },
+									{ label: "Reports", href: "/reports" },
+									{ label: "Upload", href: "/upload" },
+									{ label: "Settings", href: "/settings" },
+								]}
+							/>
 
 							{/* Socials */}
-							<FooterColumn title="Socials" links={[
-								{ label: "Twitter / X", href: "#" },
-								{ label: "LinkedIn", href: "#" },
-								{ label: "GitHub", href: "#" },
-								{ label: "Discord", href: "#" },
-							]} />
+							<FooterColumn
+								title="Socials"
+								links={[
+									{ label: "Twitter / X", href: "#" },
+									{ label: "LinkedIn", href: "#" },
+									{ label: "GitHub", href: "#" },
+									{ label: "Discord", href: "#" },
+								]}
+							/>
 
 							{/* Legal */}
-							<FooterColumn title="Legal" links={[
-								{ label: "Privacy Policy", href: "#" },
-								{ label: "Terms of Service", href: "#" },
-								{ label: "Cookie Policy", href: "#" },
-							]} />
+							<FooterColumn
+								title="Legal"
+								links={[
+									{ label: "Privacy Policy", href: "#" },
+									{ label: "Terms of Service", href: "#" },
+									{ label: "Cookie Policy", href: "#" },
+								]}
+							/>
 
 							{/* Account */}
-							<FooterColumn title="Register" links={[
-								{ label: "Sign Up", href: "/signup" },
-								{ label: "Login", href: "/login" },
-								{ label: "Forgot Password", href: "#" },
-							]} />
+							<FooterColumn
+								title="Register"
+								links={[
+									{ label: "Sign Up", href: "/signup" },
+									{ label: "Login", href: "/login" },
+									{ label: "Forgot Password", href: "#" },
+								]}
+							/>
 						</div>
 					</div>
 

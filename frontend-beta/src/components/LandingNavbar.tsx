@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { LiquidButton } from "@/components/ui/liquid-glass-button";
 
 export function LandingNavbar({
 	onUploadClick,
@@ -34,24 +35,16 @@ export function LandingNavbar({
 
 				{/* Right: nav links + CTA */}
 				<div className="hidden lg:flex items-center gap-6">
-					<Link
-						href="/contact"
-						className="text-[14px] font-medium text-white/50 hover:text-white/90 transition-colors duration-200"
-					>
-						Contact
-					</Link>
 					<div className="flex items-center gap-2.5">
-						<Link
-							href="/login"
-							className="px-5 py-2.5 rounded-full text-[14px] font-medium transition-all duration-200 liquid-glass text-white border border-white/18 hover:bg-white/8 hover:border-white/32 hover:shadow-[0_0_24px_rgba(255,255,255,0.12)]"
-						>
-							Log In
+						<Link href="/login">
+							<LiquidButton size="sm" className="rounded-full px-5 py-2.5 text-[14px] font-medium text-white">
+								Log In
+							</LiquidButton>
 						</Link>
-						<Link
-							href="/signup"
-							className="px-5 py-2.5 rounded-full text-[14px] font-medium transition-all duration-200 liquid-glass text-white border border-white/18 hover:bg-white/8 hover:border-white/32 hover:shadow-[0_0_24px_rgba(255,255,255,0.12)]"
-						>
-							Sign Up
+						<Link href="/signup">
+							<LiquidButton size="sm" className="rounded-full px-5 py-2.5 text-[14px] font-medium text-white">
+								Sign Up
+							</LiquidButton>
 						</Link>
 					</div>
 				</div>
@@ -70,27 +63,16 @@ export function LandingNavbar({
 			{mobileOpen && (
 				<div className="fixed inset-0 top-19 z-40 glass-strong p-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 lg:hidden">
 					<div className="mt-4 flex flex-col gap-3">
-						<Link
-							href="/contact"
-							onClick={() => setMobileOpen(false)}
-							className="w-full py-3 rounded-full text-center font-medium text-white/60 border border-white/10 hover:text-white hover:border-white/20 transition-all duration-200"
-						>
-							Contact
-						</Link>
-						<Link
-							href="/login"
-							onClick={() => setMobileOpen(false)}
-							className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/18 hover:bg-white/8 transition-all duration-200"
-						>
+						<Link href="/login" onClick={() => setMobileOpen(false)}>
+						<LiquidButton size="default" className="w-full rounded-full text-center font-medium text-white">
 							Log In
-						</Link>
-						<Link
-							href="/signup"
-							onClick={() => setMobileOpen(false)}
-							className="w-full py-3 rounded-full text-center font-medium liquid-glass text-white border border-white/18 hover:bg-white/8 transition-all duration-200"
-						>
+						</LiquidButton>
+					</Link>
+					<Link href="/signup" onClick={() => setMobileOpen(false)}>
+						<LiquidButton size="default" className="w-full rounded-full text-center font-medium text-white">
 							Sign Up
-						</Link>
+						</LiquidButton>
+					</Link>
 					</div>
 				</div>
 			)}

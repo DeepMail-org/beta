@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
 	productionBrowserSourceMaps: false,
 	poweredByHeader: false,
 
+	transpilePackages: [
+		"@cloudscape-design/board-components",
+		"@cloudscape-design/components",
+		"@cloudscape-design/global-styles",
+		"@cloudscape-design/component-toolkit",
+	],
+
 	experimental: {
 		optimizePackageImports: [
 			"lucide-react",

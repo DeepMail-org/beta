@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -18,6 +18,7 @@ import {
 	type CardState,
 	type CardValidity,
 } from "@/components/ui/credit-card-form";
+import { LiquidButton } from "@/components/ui/liquid-glass-button";
 
 type Plan = {
 	id: "starter" | "pro" | "enterprise";
@@ -94,7 +95,11 @@ export default function PaymentsPage() {
 			? activePlan.priceMonthly
 			: Math.round(activePlan.priceMonthly * 12 * (1 - yearlyDiscount));
 
-	const handleCardSubmit = async (
+	const handleCardChange = useCallback((state: CardState) => {
+		setCard(state);
+	}, []);
+
+	const handleCardSubmit = useCallback(async (
 		_state: CardState,
 		validity: CardValidity,
 	) => {
@@ -103,7 +108,7 @@ export default function PaymentsPage() {
 		await new Promise((r) => setTimeout(r, 1100));
 		setSaving(false);
 		setSaved(true);
-	};
+	}, []);
 
 	return (
 		<div className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -180,17 +185,24 @@ export default function PaymentsPage() {
 				<div className="mb-8 flex items-center gap-3">
 					<div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/2 p-1">
 						{(["monthly", "yearly"] as const).map((opt) => (
-							<button
-								key={opt}
-								onClick={() => setBilling(opt)}
-								className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
-									billing === opt
-										? "bg-white/10 text-white"
-										: "text-white/50 hover:text-white/80"
-								}`}
-							>
-								{opt === "monthly" ? "Monthly" : "Yearly"}
-							</button>
+							billing === opt ? (
+								<LiquidButton
+									key={opt}
+									onClick={() => setBilling(opt)}
+									size="sm"
+									className="rounded-full px-4 py-1.5 text-xs font-medium text-white"
+								>
+									{opt === "monthly" ? "Monthly" : "Yearly"}
+								</LiquidButton>
+							) : (
+								<button
+									key={opt}
+									onClick={() => setBilling(opt)}
+									className="rounded-full px-4 py-1.5 text-xs font-medium text-white/50 hover:text-white/80 transition-all duration-200"
+								>
+									{opt === "monthly" ? "Monthly" : "Yearly"}
+								</button>
+							)
 						))}
 					</div>
 					{billing === "yearly" && (
@@ -303,6 +315,11 @@ export default function PaymentsPage() {
 									${displayPrice + Math.round(displayPrice * 0.18)}
 								</span>
 							</div>
+							<LiquidButton
+								className="w-full mt-6 h-12 rounded-full text-sm font-medium text-white"
+							>
+								Subscribe Now
+							</LiquidButton>
 						</div>
 
 						<div className="flex items-start gap-3 rounded-2xl border border-white/6 bg-white/[0.015] p-4">
@@ -352,7 +369,7 @@ export default function PaymentsPage() {
 									</header>
 
 									<CreditCardForm
-										onChange={(state) => setCard(state)}
+										onChange={handleCardChange}
 										onSubmit={handleCardSubmit}
 										showSubmit
 									/>

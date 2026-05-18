@@ -6,18 +6,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowUpRight, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-const streakStyle = (top: string, opacity: number, shadow: string): React.CSSProperties => ({
-	position: "absolute",
-	width: "220%",
-	height: "1px",
-	left: "-60%",
-	top,
-	transform: "rotate(-15.45deg)",
-	transformOrigin: "center center",
-	background: `rgba(255,255,255,${opacity})`,
-	boxShadow: shadow,
-});
+import { FloatingPaths } from "@/components/ui/background-paths";
+import { LiquidButton } from "@/components/ui/liquid-glass-button";
 
 export default function SignupPage() {
 	const router = useRouter();
@@ -45,13 +35,10 @@ export default function SignupPage() {
 
 	return (
 		<div className="min-h-screen bg-black flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
-			{/* Background — streaks + ambient bokeh blobs */}
-			<div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-				<div style={streakStyle("49%", 0.75, "0 0 50px 14px rgba(255,255,255,0.16), 0 0 16px 3px rgba(255,255,255,0.28)")} />
-				<div style={streakStyle("65%", 0.45, "0 0 35px 8px rgba(255,255,255,0.09), 0 0 10px 2px rgba(255,255,255,0.16)")} />
-				<div className="absolute -left-48 top-1/4 w-130 h-130 rounded-full" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.045) 0%, transparent 70%)", filter: "blur(50px)" }} />
-				<div className="absolute -right-48 bottom-1/4 w-115 h-115 rounded-full" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)", filter: "blur(50px)" }} />
-				<div className="absolute top-2/3 left-1/3 w-72 h-72 rounded-full" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)", filter: "blur(40px)" }} />
+			{/* Background — animated paths */}
+			<div className="absolute inset-0 pointer-events-none" aria-hidden>
+				<FloatingPaths position={1} />
+				<FloatingPaths position={-1} />
 			</div>
 
 			{/* Card halo blur — only blurs the area immediately around the card */}
@@ -84,14 +71,14 @@ export default function SignupPage() {
 
 				{/* Card with mouse-move spotlight */}
 				<div
-					className="glass rounded-3xl p-8 border border-white/[0.07] shadow-[0_24px_80px_rgba(0,0,0,0.6)] relative overflow-hidden"
+					className="rounded-[2rem] p-8 border border-white/10 bg-white/[0.04] shadow-[0_24px_80px_rgba(0,0,0,0.6)] relative overflow-hidden backdrop-blur-xl"
 					onMouseMove={onCardMouseMove}
 					onMouseEnter={() => setCardHovered(true)}
 					onMouseLeave={() => setCardHovered(false)}
 				>
 					{/* Spotlight follows cursor inside card */}
 					<div
-						className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300"
+						className="pointer-events-none absolute inset-0 rounded-[2rem] transition-opacity duration-300"
 						style={{
 							opacity: cardHovered ? 1 : 0,
 							background: `radial-gradient(350px circle at ${spot.x}px ${spot.y}px, rgba(255,255,255,0.07), transparent 60%)`,
@@ -154,10 +141,10 @@ export default function SignupPage() {
 								</div>
 							</div>
 
-							<button
+							<LiquidButton
 								type="submit"
 								disabled={isLoading}
-								className="relative w-full h-12 rounded-full text-[15px] font-medium overflow-hidden group liquid-glass text-white border border-white/20 mt-2 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-white/8 hover:border-white/35 hover:shadow-[0_0_32px_rgba(255,255,255,0.16)] active:scale-[0.99]"
+								className="w-full h-12 rounded-full text-[15px] font-medium text-white mt-2"
 							>
 								{isLoading ? (
 									<span className="flex items-center justify-center gap-2">
@@ -170,10 +157,10 @@ export default function SignupPage() {
 								) : (
 									<span className="flex items-center justify-center gap-2">
 										Get Started Free
-										<ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+										<ArrowUpRight className="h-4 w-4" />
 									</span>
 								)}
-							</button>
+							</LiquidButton>
 						</form>
 
 						<p className="text-center text-xs text-white/25 mt-6">

@@ -18,7 +18,8 @@ node_modules/
 frontend-beta/node_modules/
 frontend-beta/.next/
 frontend-beta/tsconfig.tsbuildinfo
-
+deepmail-dashboard/
+.understand-anything
 # -----------------------------------------------------------------------------
 # Environment and Secrets - Comprehensive protection
 # -----------------------------------------------------------------------------
@@ -91,7 +92,6 @@ Thumbs.db
 session-*
 .claude/
 .agent/
-deepmail-dashboard/
 # -----------------------------------------------------------------------------
 # OS-specific files
 # -----------------------------------------------------------------------------
@@ -99,7 +99,6 @@ deepmail-dashboard/
 Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
-
 # -----------------------------------------------------------------------------
 # Version Control and Merge Artifacts
 # -----------------------------------------------------------------------------

@@ -46,6 +46,9 @@ async fn main() -> anyhow::Result<()> {
 
     info!(service = "deepmail-gateway", "starting");
 
+    // Initialize Zig rate limiter
+    deepmail_common::zig_ratelimiter::init();
+
     // Config — fail fast if required vars missing
     let cfg = config::GatewayConfig::from_env()
         .map_err(|e| anyhow::anyhow!("config error: {e}"))?;
@@ -177,4 +180,7 @@ async fn shutdown_signal() {
     }
 
     info!("shutdown signal received");
+    
+    // Cleanup Zig rate limiter
+    deepmail_common::zig_ratelimiter::cleanup_all();
 }

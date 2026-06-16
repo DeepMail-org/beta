@@ -1855,7 +1855,6 @@ dependencies = [
  "prost",
  "prost-types",
  "rand 0.8.6",
- "reqwest",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -1865,7 +1864,6 @@ dependencies = [
  "tonic",
  "tracing",
  "tracing-subscriber",
- "urlencoding",
  "uuid",
 ]
 
@@ -1933,9 +1931,11 @@ dependencies = [
  "anyhow",
  "async-nats",
  "bytes",
+ "cc",
  "chrono",
  "config",
  "futures",
+ "libc",
  "once_cell",
  "prost",
  "prost-build",

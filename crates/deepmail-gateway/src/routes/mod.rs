@@ -11,13 +11,18 @@ pub mod notify;
 pub mod tenant;
 
 pub fn build_router(ctx: Arc<GatewayCtx>) -> Router {
-    // Public routes — no auth required
+    // Public routes with auth rate limiting — no auth required but rate limited
     let public_routes = Router::new()
         .route("/auth/register", post(auth::register))
         .route("/auth/login", post(auth::login))
         .route("/auth/verify-otp", post(auth::verify_otp))
         .route("/auth/refresh", post(auth::refresh))
-        .route("/health", get(health::health_check));
+        .route("/health", get(health::health_check))
+        // Apply rate limiting to auth endpoints
+        .layer(middleware::from_fn_with_state(
+            ctx.clone(),
+            crate::middleware::rate_limit::auth_rate_limit_middleware,
+        ));
 
     // Protected routes — auth + rate limit middleware applied here
     // Logging is INSIDE the auth layer so it can read claims from extensions

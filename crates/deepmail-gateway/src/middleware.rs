@@ -12,6 +12,9 @@ use axum::{
 use crate::auth_middleware::AuthClaims;
 use crate::GatewayCtx;
 
+// Re-export rate limit middleware
+pub mod rate_limit;
+
 pub async fn logging_middleware(
     State(ctx): State<Arc<GatewayCtx>>,
     req: Request<Body>,

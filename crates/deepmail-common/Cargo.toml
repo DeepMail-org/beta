@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description       = "Shared library for DeepMail microservices: proto types, db, nats, errors, config."
+description       = "Shared library for DeepMail microservices: proto types, db, nats, errors, config, rate limiting."
 
 [lib]
 name = "deepmail_common"
@@ -29,7 +29,9 @@ redis.workspace       = true
 futures.workspace     = true
 bytes.workspace       = true
 once_cell.workspace   = true
+libc = "0.2"
 
 [build-dependencies]
 tonic-build.workspace = true
 prost-build.workspace = true
+cc = "1.0"

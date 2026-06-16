@@ -8,3 +8,7 @@ pub mod lockouts;
 pub mod otp;
 pub mod refresh_tokens;
 pub mod users;
+pub mod two_fa;
+pub mod sessions;
+pub mod password_reset;
+pub mod security_audit;

@@ -12,6 +12,7 @@ pub mod config;
 pub mod db;
 pub mod error;
 pub mod nats;
+pub mod zig_ratelimiter;
 
 /// Proto-generated gRPC types for all DeepMail services.
 pub mod proto {
